@@ -1,0 +1,991 @@
+<style>
+  .dotted-menu .dot {
+    height: 6px;
+    width: 6px;
+    background-color: #209e91;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 3px;
+  }
+  .dotted-menu {
+    margin-left: 7px;
+  }
+  ::-webkit-scrollbar {
+    cursor: pointer !important;
+  }
+  ::-webkit-scrollbar {
+    /* width: 20px; */
+    background: #336799;
+    cursor: pointer;
+    height: 10px;
+    border-radius: calc(15px / 2);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #336799;
+    border-radius: calc(15px / 2);
+    cursor: pointer;
+  }
+  .btn {
+    line-height: 0.9 !important;
+  }
+  .example-box {
+    width: 200px;
+    height: 200px;
+    border: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: move;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #fff;
+    border-radius: 4px;
+    position: relative;
+    z-index: 1;
+    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+      0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  }
+
+  .example-box:active {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+      0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+  thead {
+    display: table-header-group !important;
+    vertical-align: middle;
+    border-color: inherit;
+  }
+
+  thead,
+  tfoot {
+    background-color: #3f87a6;
+    color: #fff;
+  }
+  thead th {
+    color: #fff !important;
+    /* display: block  !important; */
+  }
+  tfoot tr td {
+padding: initial !important;
+  
+}
+  
+
+  tbody {
+    background-color: #e4f0f5;
+    display: table-row-group !important;
+  }
+
+  caption {
+    padding: 10px;
+    caption-side: bottom;
+  }
+
+  table {
+    border-collapse: collapse;
+    /* border: 2px solid rgb(200, 200, 200); */
+    letter-spacing: 1px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    display: table !important;
+  table-layout: fixed;
+  background-color: #336799 ;
+  
+  }
+
+  td,
+  th {
+    border: 1px solid rgb(190, 190, 190);
+    padding: 5px 10px;
+  }
+
+  td {
+    text-align: center;
+  }
+  tfoot {
+    display: table-footer-group !important;
+  }
+  thead th {
+    background-color: #336799 !important;
+    width: 150px;
+ 
+  }
+  tfoot tr {
+    background-color: #336799 !important;
+    color: #fff;
+  }
+  tfoot td {
+    color: #fff;
+  }
+  tbody tr {
+    display: table-row !important;
+  }
+
+  .card{
+    width: 99%;
+  }
+  thead :last-child{
+    position: sticky;
+    top: 0;
+  }
+
+</style>
+
+<div class="row" style="height: 100%">
+  <div class="card">
+    <div class="card-header" style="display: flex; align-items: center; justify-content: space-between">
+      <div>
+        <span>{{ masterService.simpleTablesettings.title }}</span>
+      </div>
+      <div class="flex">
+        <report-paging
+        [id]="name"
+        style="position: relative; float: right"
+        
+        (pageSizeChanged)="pageSizeChanged($event)"
+        ></report-paging>
+        <div
+          *ngIf="masterService.simpleTablesettings.showSettingButton"
+        >
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#exampleModal"
+            style="
+              margin-bottom: 10px;
+              background: none !important;
+              border: none !important;
+              padding: 0;
+              margin-right:40px;
+            "
+            (click)="showModal()"
+          >
+            <div class="dotted-menu">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div style="display: flex; align-items: center; justify-content: space-between">
+      <div
+        *ngIf="masterService.simpleTablesettings.showSettingButton"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#exampleModal"
+          style="
+            margin-bottom: 10px;
+            background: none !important;
+            border: none !important;
+            padding: 0;
+          "
+          (click)="showModal()"
+        >
+          <div class="dotted-menu">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </button>
+      </div>
+      <report-paging
+        [id]="name"
+        style="position: relative; float: right"
+        
+        (pageSizeChanged)="pageSizeChanged($event)"
+      ></report-paging>
+    </div> -->
+
+    <div class="row clearfix">
+      <div class="col-md-12">
+        <ng-container
+          *ngIf="
+            masterService.simpleTablesettings.filterOption ==
+              filterDisplayOption.OneFilterAtTop &&
+            masterService.simpleTablesettings.DataSource == 0
+          "
+        >
+          <div class="col-md-6" style="margin: 2px 0px">
+            <select style="width: 100%" (change)="onFilterOptionChange($event)">
+              <option value="" selected>Select Filter Option</option>
+              <ng-container
+                *ngFor="let item of masterService.simpleTablesettings.columns"
+              >
+                <option *ngIf="!item.noSearch" [value]="item.key">
+                  {{ item.title }}
+                </option>
+              </ng-container>
+            </select>
+          </div>
+          <div class="col-md-6" style="margin: 2px 0px">
+            <input
+              #inputBox
+              type="text"
+              style="width: 100%"
+              [ngModel]="filterValue"
+              placeholder="item.title"
+              (keyup)="triggerSearch($event, false)"
+            />
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="card-body table-responsive">
+      <table id="resizeTable" class="table table-striped" tableResize 
+      [ngStyle]="{'table-layout': mergereportHeaders.length > 0 ? 'auto' : null }"
+     
+      >
+        <!-- Button trigger modal -->
+
+        <!-- <button (click)="showTableHead= !showTableHead"> Edit  Tables </button>
+        <ng-container *ngFor="let item of masterService.simpleTablesettings.columns"> <p *ngIf ="showTableHead">  {{ item.title }} <input type="checkbox" *ngFor="let item of masterService.simpleTablesettings.columns; let i=index" (change)="onChange($event, 'cl'+i)"> </p></ng-container>
+         -->
+        <thead
+         
+        >
+          <ng-container *ngIf="mergereportHeaders.length > 0">
+            <tr>
+              <ng-container
+                *ngIf="masterService.simpleTablesettings.showSerialNo == true"
+              >
+                <th></th>
+              </ng-container>
+              <ng-container
+                [ngTemplateOutlet]="
+                  mergeHeaderTemplate || defaultmergeHeaderTemplate
+                "
+                [ngTemplateOutletContext]="{
+                  mergereportHeaders: mergereportHeaders
+                }"
+              >
+              </ng-container>
+            </tr>
+          </ng-container>
+          <tr style="top: 0; line-height: 1.5rem">
+            <ng-container
+              *ngIf="masterService.simpleTablesettings.showSerialNo == true"
+            >
+              <th
+                [ngStyle]="{
+                  'text-align': 'center',
+                  'white-space': 'normal',
+                  width: masterService.simpleTablesettings.serialNoWidth
+                }"
+              >
+                SN
+              </th>
+            </ng-container>
+            <ng-container
+              [ngTemplateOutlet]="
+                defaultHeaderTemplate || defaultHeaderTemplate
+              "
+              [ngTemplateOutletContext]="{
+                columns: masterService.simpleTablesettings.columns,
+                sortDataTable: sortTableData
+              }"
+
+              [ngStyle]="{
+                'text-align': 'center',
+                'white-space': 'normal',
+                width: masterService.simpleTablesettings.serialNoWidth
+              }"
+            >
+            </ng-container>
+
+            <ng-container
+              *ngIf="
+                masterService.simpleTablesettings.showActionButton &&
+                masterService.simpleTablesettings.actionKeys?.length
+              "
+            >
+              <th
+                [ngStyle]="masterService.simpleTablesettings.actionColumnStyle"
+              >
+                Actions
+              </th>
+            </ng-container>
+          </tr>
+          <ng-container
+            *ngIf="
+              masterService.simpleTablesettings.filterOption ==
+              filterDisplayOption.ColumnWiseMultiFilter
+            "
+          >
+            <tr>
+              <ng-container
+                *ngIf="masterService.simpleTablesettings.showSerialNo == true"
+              >
+                <th
+                  [ngStyle]="{
+                    'text-align': 'center',
+                    width: masterService.simpleTablesettings.serialNoWidth
+                  }"
+                ></th>
+              </ng-container>
+              <ng-container
+                [ngTemplateOutlet]="
+                  searchHeaderTemplate || defaultSearchHeaderTemplate
+                "
+                [ngTemplateOutletContext]="{
+                  triggerMultiSearch: triggerMultiSearch,
+                  columns: masterService.simpleTablesettings.columns
+                }"
+              >
+              </ng-container>
+            </tr>
+          </ng-container>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="itemList && itemList.length > 0">
+            <tr
+              class="highlight"
+              [class.selected-row]="selectedRowIndex == i"
+              *ngFor="
+                let itemObj of itemList
+                  | paginate
+                    : {
+                        id: name,
+                        itemsPerPage: pageSize,
+                        currentPage: pageNumber,
+                        totalItems: totalItems
+                      };
+                let i = index
+              "
+              (contextmenu)="onContextMenuClick($event, itemObj)"
+            >
+              <ng-container
+                *ngIf="masterService.simpleTablesettings.showSerialNo == true"
+              >
+                <td
+                  [ngStyle]="{
+                    width: masterService.simpleTablesettings.serialNoWidth
+                  }"
+                >
+                  <div
+                    [ngStyle]="masterService.simpleTablesettings.serialStyle"
+                  >
+                    {{ getSno(i) }}
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container
+                [ngTemplateOutlet]="
+                  tableDataTemplate || defaultTableDataTemplate
+                "
+                [ngTemplateOutletContext]="{
+                  columns: masterService.simpleTablesettings.columns,
+                  itemObj: itemObj,
+                  isimpleTableConfig: isimpleTableConfig
+                }"
+              >
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  masterService.simpleTablesettings.showActionButton &&
+                  masterService.simpleTablesettings.actionKeys?.length
+                "
+              >
+                <td
+                  [ngStyle]="
+                    masterService.simpleTablesettings.actionColumnStyle
+                  "
+                >
+                  <ng-container
+                    *ngFor="
+                      let action of masterService.simpleTablesettings
+                        .actionKeys;
+                      let z = index
+                    "
+                  >
+                    <ng-container *ngIf="action.type == 'button'">
+                      <span>
+                        <button
+                          style="width: 60px; height: 27px; margin-right: 2px"
+                          type="button"
+                          class="btn btn-sm btn-info mr-1 btn-sm"
+                          (click)="
+                            onActionClicked(
+                              action.text,
+                              action.confirmMessage,
+                              i,
+                              itemObj
+                            )
+                          "
+                          data-toggle="modal"
+                        >
+                          {{ action.title }}
+                        </button>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="action.type == 'checkbox'">
+                      <span>
+                        <label>{{ itemObj["selectedField"] }}</label>
+                      </span>
+                      <span>
+                        <input
+                          style="
+                            width: 60px;
+                            height: 27px;
+                            margin-right: 2px;
+                            margin-top: 10px;
+                          "
+                          type="checkbox"
+                          (click)="
+                            onActionClicked(
+                              action.text,
+                              action.confirmMessage,
+                              i,
+                              $event
+                            )
+                          "
+                          [checked]="itemObj['selectedField']"
+                          data-toggle="modal"
+                        />
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="action.type == 'icon'">
+                      <span>
+                        <i
+                          class="{{ action.icon }}"
+                          (click)="
+                            onActionClicked(
+                              action.text,
+                              action.confirmMessage,
+                              i,
+                              $event
+                            )
+                          "
+                          title="{{ action.title }}"
+                        ></i>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="action.type == 'buttonmenu'">
+                      <span>
+                        <genericButtonmenu
+                          [rowValue]="itemObj"
+                          [buttonMenus]="action?.drilldownmenus"
+                          [name]="action?.title"
+                        >
+                        </genericButtonmenu>
+                      </span>
+                    </ng-container>
+                  </ng-container>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-container>
+
+          <ng-container *ngIf="itemList && itemList.length === 0">
+            <tr>
+              <td colspan="6">
+                <div class="font-weight-bold">
+                  Product Lists are unavailable.
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+        <tfoot style="margin-bottom: 0.5%">
+          <tr>
+            <ng-container
+              *ngIf="masterService.simpleTablesettings.showSerialNo == true"
+            >
+              <td></td>
+            </ng-container>
+            <ng-container
+              [ngTemplateOutlet]="footerTemplate || defaultFooterTemplate"
+              [ngTemplateOutletContext]="{
+                TotalData: masterService.simpleTablesettings.TotalData,
+                columns: masterService.simpleTablesettings.columns
+              }"
+            >
+            </ng-container>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="card-footer">
+      <pagination-controls
+        style="margin-top: 10px; text-align: center;"
+        [id]="name"
+        (pageChange)="onNgxPageChange($event)"
+        [maxSize]="sizeValue"
+        [directionLinks]="trueValue"
+        [autoHide]="trueValue"
+        [responsive]="trueValue"
+        previousLabel="Previous"
+        nextLabel="Next"
+        screenReaderPaginationLabel="Pagination"
+        screenReaderPageLabel="page"
+        screenReaderCurrentLabel="You're on page"
+      ></pagination-controls>
+      <!-- <pagination-controls
+          class="my-pagination"
+          (pageChange)="onPageChange($event)"
+        ></pagination-controls> -->
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  bsModal
+  class="modal fade"
+  #exampleModal="bs-modal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  style="height: 100vh"
+>
+  <div #block="" rzHandles="all" class="modal-dialog modal-lg" role="document" style="top: 2%; left:25%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Column format Configuration
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="childModal.hide()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="hide-show-model-title">
+        <div class="modal-body" style="overflow: auto; height: 500px">
+          <table class="table">
+            <thead class="thead-dark" style="text-align:center">
+              <tr>
+                <th>Group Header</th>
+                <th>Column Title</th>
+                <th style="width: 70px">Hidden</th>
+                <th style="width: 80px">Nosearch</th>
+                <th style="width: 100px">ColPosition</th>
+                <th style="width: 100px">Width</th>
+                <th>Alignment</th>
+                <th>FormatType</th>
+                <th>FormatString</th>
+              </tr>
+            </thead>
+            <tbody style="height: 30vh">
+              <ng-container
+                *ngFor="let item of masterService.simpleTablesettings.columns"
+              >
+                <tr>
+                  <td>
+                    <input
+                      type="text"
+                      style="width: 90%; border: 1px solid #ddd"
+                      [(ngModel)]="item.titleGroup"
+                      placeholder="{{ item.title }}"
+                      (change)="item.dirty = 1"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      style="width: 90%; border: 1px solid #ddd"
+                      [(ngModel)]="item.title"
+                      placeholder="{{ item.title }}"
+                      (change)="item.dirty = 1"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="item.hidden"
+                      (change)="
+                        $any($event.target).checked
+                          ? (item.hidden = true)
+                          : (item.hidden = false);
+                        item.dirty = 1;
+                        onHiddenChange(item)
+                      "
+                      [checked]="item.hidden == true"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="item.noSearch"
+                      (change)="
+                        $any($event.target).checked
+                          ? (item.noSearch = true)
+                          : (item.noSearch = false);
+                        item.dirty = 1
+                      "
+                      [checked]="item.noSearch == true"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      [(ngModel)]="item.colPosition"
+                      style="width: 90%; border: 1px solid #ddd"
+                      (change)="item.dirty = 1"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      style="width: 90%; border: 1px solid #ddd"
+                      [(ngModel)]="item.width"
+                      placeholder="{{ item.width }}"
+                      (change)="item.dirty = 1"
+                    />
+                  </td>
+                  <td>
+                    <select
+                      [(ngModel)]="item.alignment"
+                      placeholder="item.alignment"
+                      (change)="item.dirty = 1"
+                    >
+                      <option value="center">center</option>
+                      <option value="left">left</option>
+                      <option value="right">right</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select
+                      [(ngModel)]="item.formatType"
+                      (change)="item.dirty = 1"
+                    >
+                      <option value="0">Text</option>
+                      <option value="1">Number</option>
+                      <option value="2">Date</option>
+                      <option value="3">RoundingTwoDigit</option>
+                      <option value="4">Editable</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      style="width: 90%; border: 1px solid #ddd"
+                      [(ngModel)]="item.formatString"
+                      placeholder="{{ item.formatString }}"
+                      (change)="item.dirty = 1"
+                    />
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+            (click)="onHideModalSetting()"
+          >
+            OK
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-dismiss="modal"
+            (click)="onSaveModalSetting()"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <ng-template #ColumnSettingModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Column Setting</h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    >
+      <span aria-hidden="true">x</span>
+    </button>
+    <div class="modal-body">
+      <form [formGroup]="modalForm">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th>Column Title</th>
+              <th>Hidden</th>
+              <th>Nosearch</th>
+              <th>Width</th>
+
+              <th>Alignment</th>
+              <th>FormatType</th>
+              <th>FormatString</th>
+            </tr>
+          </thead>
+          <tbody style="height: 30vh">
+            <ng-container
+              *ngFor="
+                let item of masterService.simpleTablesettings.columns;
+                let i = index
+              "
+            >
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    style="width: 90%; border: 1px solid #ddd"
+                    formControlName="{{ item.key }}_title"
+                    placeholder="{{ item.title }}"
+                    (change)="item.title = $any($event.target).value"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="checkbox"
+                    formControlName="{{ item.key }}_hidden"
+                    (change)="
+                      $any($event.target).checked
+                        ? (item.hidden = true)
+                        : (item.hidden = false);
+                      item.dirty = 1
+                    "
+                    [checked]="item.hidden == true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="checkbox"
+                    (change)="
+                      $any($event.target).checked
+                        ? (item.noSearch = true)
+                        : (item.noSearch = false)
+                    "
+                    [checked]="item.noSearch == true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    style="width: 90%; border: 1px solid #ddd"
+                    placeholder="{{ item.width }}"
+                  />
+                </td>
+                <td>
+                  <select placeholder="item.alignment">
+                    <option value="center">center</option>
+                    <option value="left">left</option>
+                    <option value="right">right</option>
+                  </select>
+                </td>
+                <td>
+                  <select>
+                    <option value="0">Text</option>
+                    <option value="1">Number</option>
+                    <option value="2">Date</option>
+                    <option value="3">RoundingTwoDigit</option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    style="width: 90%; border: 1px solid #ddd"
+                    placeholder="{{ item.formatString }}"
+                  />
+                </td>
+              </tr>
+              <p>{{ item | json }}</p>
+            </ng-container>
+          </tbody>
+        </table>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-dismiss="modal"
+        (click)="modalRef.hide()"
+      >
+        OK
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-dismiss="modal"
+        (click)="onSaveModalSetting()"
+      >
+        Save Settings
+      </button>
+    </div>
+  </div>
+</ng-template> -->
+<div
+  style="visibility: hidden; position: fixed"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="contextMenu"
+></div>
+<mat-menu #contextMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <ng-container
+      *ngFor="let mnu of masterService.simpleTablesettings.contextMenus"
+    >
+      <button mat-menu-item (click)="onContextMenuAction1(mnu, item)">
+        {{ mnu.name }}
+      </button>
+    </ng-container>
+  </ng-template>
+</mat-menu>
+
+<ng-template
+  #defaultmergeHeaderTemplate
+  let-mergereportHeaders="mergereportHeaders"
+>
+  <ng-container *ngFor="let groupColumn of mergereportHeaders">
+    <th
+      [attr.colspan]="groupColumn.colspan"
+      [ngStyle]="{
+        'text-align': 'center',
+        'white-space': 'normal'
+      }"
+    >
+      {{ groupColumn.groupHeader }}
+    </th>
+   
+  </ng-container>
+  <th></th>
+</ng-template>
+<ng-template
+  #defaultHeaderTemplate
+  let-columns="columns"
+  let-sortDataTable="sortDataTable"
+>
+  <ng-container *ngFor="let item of columns; let id = index">
+    <th
+      resizable
+      *ngIf="!item.hidden"
+      [ngStyle]="{
+        'text-align': item.alignment,
+        'white-space': 'normal',
+        'width':item.width
+      }"
+      
+    >
+      {{ item.title }}
+      <i
+        *ngIf="item.sortOrder != 'asc' && item.sortOrder != 'desc'"
+        class="fa fa-sort"
+        (click)="sortDataTable(item.key, 'desc', id)"
+      ></i>
+      <i
+        *ngIf="item.sortOrder == 'asc'"
+        class="fa fa-sort-asc"
+        (click)="sortDataTable(item.key, 'asc', id)"
+      ></i>
+      <i
+        *ngIf="item.sortOrder == 'desc'"
+        class="fa fa-sort-desc"
+        (click)="sortDataTable(item.key, 'desc', id)"
+      ></i>
+    </th>
+  </ng-container>
+</ng-template>
+<ng-template
+  #defaultSearchHeaderTemplate
+  let-columns="columns"
+  let-multiSearchTrigger="triggerMultiSearch"
+>
+  <ng-container *ngFor="let item of columns">
+    <th
+      style="padding-top: 4px; padding-bottom: 4px"
+      *ngIf="!item.hidden"
+      [ngStyle]="{
+        'text-align': item.alignment
+      }"
+    >
+      <div *ngIf="!item.noSearch">
+        <input
+          #inputBox
+          class="form-control"
+          id="item.title"
+          type="text"
+          style="
+            width: 96%;
+            border-radius: 4px;
+            padding: 4px;
+            margin: 1px 0px 1px 3px;
+            
+          "
+          placeholder="{{ item.title }}"
+          (keyup)="multiSearchTrigger($event, item, false)"
+        />
+      </div>
+    </th>
+  </ng-container>
+</ng-template>
+<ng-template
+  #defaultTableDataTemplate
+  let-columns="columns"
+  let-itemObj="itemObj"
+  let-isimpleTableConfig="isimpleTableConfig"
+>
+  <ng-container *ngFor="let item of columns">
+    <td
+      *ngIf="!item.hidden"
+      [ngStyle]="{
+        'text-align': item.alignment
+      }"
+    >
+      <div *ngIf="item.isListField; else elseList">
+        <ul style="list-style-type: none">
+          <li *ngFor="let lst of itemObj[item.key]">
+            <genericSimpleColumn
+              [itemObj]="lst"
+              [item]="item"
+              [fieldName]?="item.listFieldName"
+              [isimpleTableConfig]="isimpleTableConfig"
+            ></genericSimpleColumn>
+          </li>
+        </ul>
+      </div>
+      <ng-template #elseList>
+        <genericSimpleColumn
+          [itemObj]="itemObj"
+          [item]="item"
+          [fieldName]="item.key"
+          [isimpleTableConfig]="isimpleTableConfig"
+        ></genericSimpleColumn>
+      </ng-template>
+    </td>
+  </ng-container>
+</ng-template>
+<ng-template
+  #defaultFooterTemplate
+  let-columns="columns"
+  let-item="item"
+  let-TotalData="TotalData"
+>
+  <ng-container *ngFor="let item of columns; let id = index">
+    <td
+    ngIf="!item.hidden"
+      [ngStyle]="{
+        'text-align': item.alignment,
+        'color': 'white'
+      }"
+    >
+      <div *ngIf="TotalData">
+        {{ TotalData[item.key] | number : "1.2-2" }}
+      </div>
+    </td>
+  </ng-container>
+</ng-template>

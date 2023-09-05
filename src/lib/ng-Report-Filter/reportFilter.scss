@@ -1,0 +1,26 @@
+.shadow1 {
+    /* Needed for IEs */
+
+    -moz-box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+    -webkit-box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+    box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+    -webkit-tap-highlight-color: transparent;
+
+    filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=3, MakeShadow=true, ShadowOpacity=0.30);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=3,MakeShadow=true,ShadowOpacity=0.30)";
+    zoom: 1;
+}
+@media screen and (max-width: 1200px) {
+    #filterindex {
+        margin: 0 auto !important;
+        width: auto !important;
+        margin-bottom: 30px !important;
+        overflow-x: hidden;
+        position: relative !important;
+    }
+    .button-wrapper {
+        width: 100% !important;
+        box-shadow: none !important;
+        justify-content: start !important;
+    }
+}

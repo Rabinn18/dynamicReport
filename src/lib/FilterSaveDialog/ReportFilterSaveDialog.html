@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<form [formGroup]="form">
+  <mat-dialog-content>
+    <mat-form-field MatFormFieldControl="description">
+      <input
+        matInput
+        [placeholder]="Description"
+        formControlName="description"
+      />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button class="btn btn-secondary" (click)="onClose()">Close</button>
+    <button class="btn btn-primary" (click)="onSaveDialogClick()">Save</button>
+  </mat-dialog-actions>
+</form>
+<!-- <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="close" aria-label="Save" (click)="cancel()">
+            &times;
+          </div>
+          <h4 class="modal-title">{{ heading }}</h4>
+        </div>
+
+        <div class="modal-body">
+          <div style="display:inline-block"></div>
+          {{ message$ }}
+        </div>
+        <div class="modal-footer">
+            <button class="button-wrapper" (click)="SaveReport()">Save Report</button>
+            <button class="button-wrapper" (click)="cancelReport()">Cancel Report</button>
+        </div>
+      </div>
+    </div> -->

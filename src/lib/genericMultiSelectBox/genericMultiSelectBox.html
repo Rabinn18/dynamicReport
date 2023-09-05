@@ -1,0 +1,14 @@
+<div [formGroup]="formGroup">
+  <input
+    formControlName="textControl"
+    type="text"
+    style="width: 100%"
+    placeholder="Enter keydown to select "
+    (keydown.enter)="showPopUp($event)"
+    readonly
+  />
+</div>
+<generic-popup-grid
+  #genericGridList
+  (onItemDoubleClick)="onSelectList($event)"
+></generic-popup-grid>

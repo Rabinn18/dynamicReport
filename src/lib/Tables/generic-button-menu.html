@@ -1,0 +1,59 @@
+<style>
+  .dropbtn {
+    border: none;
+    cursor: pointer;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    left: -100px;
+  }
+
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+    cursor: pointer;
+  }
+
+  .dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+  }
+</style>
+<div class="dropdown">
+  <button
+    style="width: 60px; height: 27px; margin-right: 2px"
+    type="button"
+    class="btn btn-sm btn-info mr-1 btn-sm"
+  >
+    {{name}}
+  </button>
+  <div class="dropdown-content">
+    <div *ngFor="let item of buttonMenus">
+      <a (click)="onMenuClick(item)">{{item.name}}</a>
+    </div>
+
+    <!-- <a (click)="onMenuClick($event)">Blog</a>
+    <a href="https://academy.hubspot.com/">Academy</a>
+    <a href="https://www.youtube.com/user/hubspot">YouTube</a> -->
+  </div>
+</div>

@@ -1,0 +1,480 @@
+<!-- <style>
+  /* select,
+  input {
+    border: 1px solid #ddd !important;
+    border-radius: 5px !important;
+    padding: 5px;
+  }
+  select,
+  input:focus-visible {
+    outline: none !important;
+  }
+  .buttons .buttons_input .btn {
+    line-height: 35px !important;
+    padding: 7px !important;
+  } */
+  /*   
+  .dropdown button{
+    border:none !important;
+  }
+  .dropdown button{
+    margin-bottom: 7px;
+  }
+  .dropdown-menu{
+    position: static;
+    border: none !important;
+  }
+  .dropdown{
+    position: static;
+  }
+  input[type=checkbox]{
+    margin-right: 5px;
+  }
+  
+details [open].styled {
+	transition: all 0.4s ease-in-out;
+	max-height: 20px;
+	overflow: hidden;
+}
+
+details.styled {
+	max-height: 500px;
+}
+
+details.styled summary {
+	outline: none;
+	cursor: pointer;
+} */
+  .accordion {
+    /* background-color: #eee; */
+    /* color: #666;
+   */
+    color: #313949;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 10px 0px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    background: none;
+  }
+  
+  .accordion .glyphicon {
+    font-size: 12px;
+    pointer-events: none;
+  }
+  .panel {
+    opacity: 1;
+    visibility: visible;
+    height: 100%;
+    padding-right: 15px;
+    /* transition: 0.3s ; */
+  }
+  .active .panel {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+  }
+  .glyphicon {
+    transition: 0.3s;
+  }
+  .active .glyphicon {
+    transform: rotate(-90deg);
+  }
+  .panel label input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  .panel label {
+    padding-left: 5px;
+  }
+  .dotted-menu {
+    position: relative;
+    margin-right: 10px;
+  }
+  .dotted-menu .dot {
+    height: 3px;
+    width: 8px;
+    background-color: #313949;
+    /* border-radius: 50%; */
+    display: inline-block;
+    margin-right: 3px;
+    position: relative;
+    z-index: 9;
+  }
+  .dotted-menu:hover::after {
+    opacity: 0.7;
+  }
+  .dotted-menu:after {
+    content: "";
+    background: #fff !important;
+    /* transform: scale(0); */
+    opacity: 0;
+    transition-property: transform, opacity;
+    transition-duration: 0.15s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    width: 26px;
+    height: 26px;
+    position: absolute;
+    top: 63%;
+    border-radius: 50%;
+    left: 44%;
+    /* opacity: .7; */
+    border: 1px solid #c7d2e2;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 5%);
+    transform: translate(-50%, -50%);
+  }
+  .reportPopup {
+    position: absolute;
+    top: 18px;
+    list-style: none;
+    padding: 10px 30px 10px 15px;
+    background-color: #fff;
+    display: none;
+    border-radius: 5px;
+    border: 1px solid #d6d6d6;
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 15%);
+    right: 2px;
+  }
+  .reportOption .reportPopup {
+    display: block;
+    z-index: 99;
+  }
+  .reportPopup li {
+    padding: 5px 0;
+  }
+  .button-wrapper {
+    box-shadow: 0 -2px 4px -1px rgb(0 0 0 / 15%);
+    position: absolute;
+    width: 108%;
+    bottom: 0;
+    background: #fff;
+    padding: 15px;
+    box-sizing: border-box;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+</style> -->
+<style>
+  /* .panel-wrapper{
+opacity: 0;
+visibility: hidden;
+height: 0;
+
+  }
+  .active  .panel-wrapper{
+    opacity: 1;
+visibility: visible;
+height: 100%;
+
+  } */
+  #filterindex button {
+    border: none;
+    /* background: none; */
+    font-weight: 700;
+  }
+
+  .panel {
+    margin-left: 20px;
+  }
+</style>
+
+<ng-container
+  [ngTemplateOutlet]="newTemplate || filterTemplate"
+  [ngTemplateOutletContext]="{UserReportList:UserReportList,selectedFields:selectedFields,
+    requiredFields:requiredFields,optionalFields:optionalFields,applyFiltering:applyFilter,excelDownloading:excelDownload}"
+></ng-container>
+
+<ng-template
+  #filterTemplate
+  let-UserReportList="UserReportList"
+  let-selectedFields="selectedFields"
+  let-requiredFields="requiredFields"
+  let-optionalFields="optionalFields"
+  let-applyFiltering="applyFiltering"
+  let-excelDownloading="excelDownloading"
+>
+  <div
+    class="row"
+    id="filterindex"
+    style="
+      height: 70vh;
+      background: #ffffff;
+      transition: 0.5s;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    "
+  >
+    <div
+      class="row"
+      style="
+        padding: 6%;
+        display: flex;
+
+        flex-direction: column;
+        margin-bottom: 20px;
+        justify-content: space-between;
+      "
+    >
+      <div>
+        <span
+          style="
+            padding-left: 15px;
+            padding-bottom: 15px;
+            display: block;
+            padding-bottom: 6px;
+          "
+        >
+          <strong style="border-bottom: 1px solid #ddd; font-size: 24px"
+            >Custom Reports</strong
+          >
+        </span>
+        <ul
+          *ngFor="let item of UserReportList"
+          style="
+            list-style: none;
+            padding-left: 5px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 15px;
+            background-color: #f0f3f4;
+            border-left: 3px solid #393434;
+            margin-left: 2px;
+          "
+        >
+          <li style="display: flex; align-items: center; position: relative">
+            {{item.reportName}}
+            <!-- <span
+            class="glyphicon glyphicon-minus icon-large"
+            style="padding: 2px; font-size: larger"
+            (click)="deleteReport(item)" (click)="deleteReport(item)"
+          ></span> -->
+
+            <div
+              class="dotted-menu"
+              (click)="deleteReport(item.reportName)"
+              style="margin-left: auto; cursor: pointer; margin-top: -3px"
+            >
+              <span class="dot"></span>
+              <!-- <span class="dot"></span>
+            <span class="dot"></span> -->
+              <!-- <span class="glyphicon glyphicon-filter icon-large"></span> -->
+            </div>
+            <ul class="reportPopup">
+              <li>
+                <a href="#" (click)="deleteReport(item.reportName)">Delete</a>
+              </li>
+              <!-- <li>Edit</li> -->
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div style="padding-top: 0px; padding-bottom: 6px; padding-left: 15px">
+        <button class="accordion" (click)="toggleAccordian($event)">
+          <span
+            class="glyphicon glyphicon glyphicon-triangle-bottom"
+            style="top: -1px"
+          ></span>
+          &nbsp;Selected fields
+        </button>
+        <div class="panel-wrapper">
+          <ng-container
+            [ngTemplateOutlet]="fieldList"
+            [ngTemplateOutletContext]="{fields:selectedFields}"
+          >
+          </ng-container>
+        </div>
+      </div>
+      <div style="padding-top: 0px; padding-bottom: 6px; padding-left: 15px">
+        <button class="accordion" (click)="toggleAccordian($event)">
+          <span
+            class="glyphicon glyphicon glyphicon-triangle-bottom"
+            style="top: -1px"
+          ></span>
+          &nbsp;Required fields
+        </button>
+        <div class="panel-wrapper">
+          <ng-container
+            [ngTemplateOutlet]="fieldList"
+            [ngTemplateOutletContext]="{fields:requiredFields}"
+          >
+          </ng-container>
+        </div>
+      </div>
+      <div style="padding-top: 0px; padding-bottom: 6px; padding-left: 15px">
+        <button class="accordion" (click)="toggleAccordian($event)">
+          <span
+            class="glyphicon glyphicon glyphicon-triangle-bottom"
+            style="top: -1px"
+          ></span>
+          &nbsp;Optional fields
+        </button>
+        <ng-container
+          [ngTemplateOutlet]="fieldList"
+          [ngTemplateOutletContext]="{fields:optionalFields}"
+        >
+        </ng-container>
+      </div>
+      <div class="panel-wrapper">
+        <ng-template #fieldList let-fields="fields">
+          <div class="panel" *ngFor="let fld of fields">
+            <div *ngIf="fld.isFieldDisabled==false">
+              <label
+                ><input
+                  type="checkbox"
+                  [(ngModel)]="fld.selected"
+                  [disabled]="fld.required"
+                  (change)="selectChangeHandler($event)"
+                />{{fld.fieldName}}</label
+              >
+
+              <div *ngIf="fld.controlType=='text'">
+                <div *ngIf="fld.selected" style="margin-left: 8%">
+                  <select
+                    class=""
+                    [(ngModel)]="fld.operatorValue"
+                    style="margin-bottom: 2%; width: 30%"
+                  >
+                    <option *ngFor="let opt of fld.operators">{{opt}}</option>
+                  </select>
+
+                  <input
+                    type="text"
+                    class=""
+                    [(ngModel)]="fld.fieldValue"
+                    aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm"
+                    style="margin-bottom: 10%; width: 90%"
+                  />
+                </div>
+              </div>
+              <div *ngIf="fld.controlType=='checkbox'">
+                <div *ngIf="fld.selected" style="margin-left: 8%">
+                  <generic-checkbox
+                    id="checkbox"
+                    [(ngModel)]="fld.fieldValue"
+                    [label]="fld.fieldName"
+                    [showLabel]="$any(1)"
+                  >
+                  </generic-checkbox>
+                  <label for="checkbox">{{fld.fieldName}}</label>
+                </div>
+              </div>
+              <div
+                *ngIf="fld.controlType=='dropdownmultiselect' && fld.selected"
+                style="margin-left: 8%"
+              >
+                <select
+                  [(ngModel)]="fld.operatorValue"
+                  style="margin-bottom: 2%; width: 30%"
+                >
+                  <option *ngFor="let opt of fld.operators">{{opt}}</option>
+                </select>
+
+                <dropdown-multiselect
+                  #dropdown="ngModel"
+                  [data]="fld.fieldSelectionValues.fieldvalues"
+                  [(ngModel)]="fld.fieldValue"
+                  (onItemSelect)="onItemSelect($event,fld)"
+                  (onItemDeSelect)="onItemSelect($event,fld)"
+                >
+                </dropdown-multiselect>
+                <!-- <p>{{dropdown.control | json}}</p> -->
+              </div>
+              <div
+                *ngIf="fld.controlType=='dropdown' && fld.selected"
+                style="margin-left: 8%"
+              >
+                <select
+                  [(ngModel)]="fld.operatorValue"
+                  style="margin-bottom: 2%; width: 30%"
+                >
+                  <option *ngFor="let opt of fld.operators">{{opt}}</option>
+                </select>
+                <select [(ngModel)]="fld.fieldvalue">
+                  <option
+                    *ngFor="let optfld of fld.fieldSelectionValues.fieldvalues "
+                    [value]="optfld.value"
+                  >
+                    {{optfld.name}}
+                  </option>
+                </select>
+              </div>
+              <div *ngIf="fld.controlType=='daterange'&& fld.selected">
+                <div style="margin-left: 8%">
+                  <generic-daterange-picker
+                    [(ngModel)]="fld.fieldValue"
+                    [FiscalBeginDate]="ReportFilterSetting.fiscalBeginDate"
+                  >
+                  </generic-daterange-picker>
+                </div>
+              </div>
+              <div
+                *ngIf="fld.controlType=='date' && fld.selected"
+                style="margin-top: 2%"
+              >
+                <input
+                  type="date"
+                  [(ngModel)]="fld.fieldValue"
+                  class="form-control"
+                  style="margin-top: 1%; width: 90%; margin-bottom: 3%"
+                />
+              </div>
+              <div
+                *ngIf="fld.controlType=='multiselect' && fld.selected"
+                style="margin-top: 2%"
+              >
+                <generic-multiselect
+                  [dataSource]="fld.fieldSelectionValues.fieldvalues"
+                  fieldName="name"
+                  fieldId="value"
+                  (onSelect)="onMultiSelect($event,fld)"
+                >
+                </generic-multiselect>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="button-wrapper" style="padding-left: 15px">
+        <button
+          (click)="applyFiltering()"
+          class="btn btn-info"
+          style="margin-top: 2%; margin-left: 2px; margin-right: 2px"
+        >
+          Apply filter
+        </button>
+        <button
+          (click)="excelDownload()"
+          class="btn btn-info"
+          style="margin-top: 2%"
+        >
+          Download
+        </button>
+        <!-- <button
+        (click)="saveReport()"
+        class="btn btn-info"
+        style="margin-top: 2%"
+      >
+        Save
+      </button> -->
+
+        <!-- <button
+          (click)="applyFilter()"
+          class="btn btn-info"
+          style="margin-top: 2%"
+        >
+          Reset filter
+        </button> -->
+      </div>
+    </div>
+  </div>
+</ng-template>

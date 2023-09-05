@@ -1,0 +1,129 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Column Setting</h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="modalRef.hide()"
+  >
+    <span aria-hidden="true">x</span>
+  </button>
+  <div class="modal-body">
+    <form [formGroup]="modalForm">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th>Column Title</th>
+            <th>Hidden</th>
+            <th>Nosearch</th>
+            <th>Width</th>
+
+            <th>Alignment</th>
+            <th>FormatType</th>
+            <th>FormatString</th>
+          </tr>
+        </thead>
+        <tbody style="height: 30vh">
+          <ng-container
+            *ngFor="let item of simpleTableSettings.columns; let i = index"
+          >
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  style="width: 90%; border: 1px solid #ddd"
+                  formControlName="{{ item.key }}_title"
+                  placeholder="{{ item.title }}"
+                  (change)="item.title = $any($event.target).value"
+                />
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  formControlName="{{ item.key }}_hidden"
+                  (change)="
+                    $any($event.target).checked
+                      ? (item.hidden = true)
+                      : (item.hidden = false);
+                    item.dirty = 1
+                  "
+                  [checked]="item.hidden == true"
+                />
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  formControlName="{{ item.key }}_noSearch"
+                  (change)="
+                    $any($event.target).checked
+                      ? (item.noSearch = true)
+                      : (item.noSearch = false);
+                    item.dirty = 1
+                  "
+                  [checked]="item.noSearch == true"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  formControlName="{{ item.key }}_width"
+                  style="width: 90%; border: 1px solid #ddd"
+                  placeholder="{{ item.width }}"
+                />
+              </td>
+              <td>
+                <select
+                  placeholder="item.alignment"
+                  formControlName="{{ item.key }}_alignment"
+                  (change)="item.dirty = 1"
+                >
+                  <option value="center">center</option>
+                  <option value="left">left</option>
+                  <option value="right">right</option>
+                </select>
+              </td>
+              <td>
+                <select
+                  formControlName="{{ item.key }}_formatType"
+                  (change)="item.dirty = 1"
+                >
+                  <option value="0">Text</option>
+                  <option value="1">Number</option>
+                  <option value="2">Date</option>
+                  <option value="3">RoundingTwoDigit</option>
+                </select>
+              </td>
+              <td>
+                <input
+                  formControlName="{{ item.key }}_formatString"
+                  (change)="item.dirty = 1"
+                  type="text"
+                  style="width: 90%; border: 1px solid #ddd"
+                  placeholder="{{ item.formatString }}"
+                />
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      data-dismiss="modal"
+      (click)="modalRef.hide()"
+    >
+      OK
+    </button>
+    <!-- <button
+      type="button"
+      class="btn btn-primary"
+      data-dismiss="modal"
+      (click)="onSaveModalSetting()"
+    >
+      Save Settings
+    </button> -->
+  </div>
+</div>

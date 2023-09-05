@@ -1,0 +1,35 @@
+{
+  "name": "ng-report-grid",
+  "version": "0.2.5",
+  "description": "A Simple grid which can be used with static list or api connected list with pagination",
+  "author": {
+    "name": "Sagun Tamrakar",
+    "email": "sagun@imssoftware.com.np",
+    "url": "imssoftware.com.np"
+  },
+  "keywords": [
+    "angularGrid",
+    "reportGrid"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/common": "^14.2.0",
+    "@angular/core": "^14.2.0",
+    "bootstrap": "^4.5.3",
+    "jquery": "^3.6.1",
+    "lodash": "^4.17.21",
+    "ngx-bootstrap": "^9.0.0",
+    "ngx-pagination": "^6.0.3",
+    "rxjs": "~6.6.3",
+    "@angular/material": "^14.2.7",
+    "@angular/cdk": "^14.2.7",
+    "dayjs": "^1.11.6",
+    "ng-multiselect-dropdown": "^0.3.9"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "bootstrap": "^5.2.2"
+  }
+}

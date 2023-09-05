@@ -1,0 +1,329 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody > tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table > tbody > tr > td {
+    line-height: 30px !important;
+    padding: 0px;
+  }
+
+  .table > thead > tr > th {
+    line-height: 5px !important;
+  }
+
+  .table > tbody > tr > td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+
+  .table > tbody > tr :nth-child() {
+    text-align: right !important;
+  }
+  .table > tbody > tr > td:last-child {
+    padding-right: 5px !important;
+  }
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-main-area {
+    max-height: 100%;
+    height: 30rem;
+    overflow: auto;
+    overflow-x: hidden;
+    width: 30rem;
+    top: 9.5rem;
+
+    margin-right: 20rem;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    /* width: 220px;
+    text-overflow: ellipsis;
+    overflow: hidden; */
+    white-space: nowrap;
+  }
+  .glyphicon.glyphicon-arrow-right:hover {
+    background-color: #b81616;
+    color: cornsilk;
+    transition: 0.7s;
+    border-radius: 50%;
+  }
+
+  .glyphicon.glyphicon-minus-sign:hover {
+    background-color: #b81616;
+    transition: 0.7s;
+    color: cornsilk;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  /* .status[data-status="AMOUNT"]:after{
+    text-align: center !important;   
+  } */
+  /* .format{
+    text-align: center !important;
+  } */
+
+  @media only screen and (min-width: 768px) {
+    .modal-content-main-area {
+      top: 25rem;
+      margin-right: 1rem;
+    }
+  }
+
+  @media only screen and (min-width: 1024px) {
+    .modal-content-main-area {
+      top: 8rem;
+      margin-right: 1rem;
+    }
+  }
+
+  ::ng-deep #tabindex ul{
+      padding: 0;
+    }
+</style>
+<form [formGroup]="gridForm">
+  <div
+    class="modal"
+    *ngIf="isActive"
+    style="display: block; padding: 0px; margin-bottom: 25px"
+  >
+    <!-- Modal content -->
+    <div class="modal-content modal-content-main-area" style="width: 50%">
+      <div *ngIf="popupsettings">
+        <div>
+          <div
+            class="modal-header"
+            style="padding: 0px 15px; background: #57afa6; color: #353535; align-items: center"
+          >
+          <div>
+            <h4 class="modal-title" style="text-align: center">
+              {{ popupsettings.title }}
+            </h4>
+          </div>
+            <button class="close" aria-label="Close" (click)="hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div *ngIf="popupsettings.multiSelect; else selectTableTemplate">
+            <div class="row">
+              <div
+                class="col-md-7"
+                style="
+                  position: relative;
+                  min-height: 1px;
+                  padding-left: 0px;
+                  padding-right: 0px;
+                "
+              >
+                <ng-container
+                  *ngTemplateOutlet="selectTableTemplate"
+                ></ng-container>
+              </div>
+              <div
+                class="col-md-5"
+                style="
+                  position: relative;
+                  min-height: 1px;
+                  padding-left: 0px;
+                  padding-right: 0px;
+                "
+              >
+                <div
+                  class="modal-header"
+                  style="
+                    margin: 0%;
+                    padding: 0px;
+                    background: #57afa6;
+                    color: #353535;
+                  "
+                >
+                  <h4 class="modal-title" style="text-align: center">
+                    Selected List
+                  </h4>
+                </div>
+                <div class="table">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Selected List</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let lst of multiSelectList">
+                        <tr>
+                          <td>
+                            <div style="padding: 5px 15px 0px 0px">
+                              {{ lst.name
+                              }}<span
+                                class="btn btn-danger"
+                                style="
+                                  float: right;
+                                  padding: 0%;
+                                  width: 15%;
+                                "
+                                (click)="onMultiSelectDelete(lst)"
+                              ><fa-icon [icon]="faTrash"></fa-icon></span>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="margin-left: 25px"
+          *ngIf="summary"
+          [innerHTML]="summary"
+        ></div>
+        <ng-template #selectTableTemplate>
+          <div class="row clearfix">
+            <div class="col-md-12 row pl-1">
+              <div class="col-md-6 p-1" style="margin: 2px 0px">
+                <select
+                  style="width: 100%"
+                  formControlName="columnField"
+                  [ngModel]="filterOption"
+                  (ngModelChange)="triggerSearch($event, true)"
+                >
+                  <option value="" selected>Select Filter Option</option>
+                  <ng-container *ngFor="let item of popupsettings.columns">
+                    <option *ngIf="!item.noSearch" [value]="item.key">
+                      {{ item.title }}
+                    </option>
+                  </ng-container>
+                </select>
+              </div>
+              <div class="col-md-6 p-1" style="margin: 2px 0px">
+                <input
+                  #inputBox
+                  type="text"
+                  style="width: 100%"
+                  placeholder="Enter keyword to search"
+                  [(ngModel)]="filterValue"
+                  (ngModelChange)="triggerSearch($event, false)"
+                  formControlName="valueField"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-md-12 table-scroll"
+            style="
+              position: relative;
+              padding: 0 6px;
+            "
+          >
+            <table class="table">
+              <thead>
+                <tr style="background: #57afa6; color: #353535">
+                  <ng-container *ngFor="let item of popupsettings.columns">
+                    <th
+                      *ngIf="!item.hidden"
+                      [ngStyle]="{ 'text-align': item.alignment }"
+                    >
+                      {{ item.title }}
+                    </th>
+                  </ng-container>
+                  <ng-container *ngIf="popupsettings.multiSelect">
+                    <th></th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody *ngIf="itemList.length">
+                <tr
+                  class="highlight"
+                  [class.selected-row]="selectedRowIndex == i"
+                  *ngFor="
+                    let itemObj of itemList
+                      | paginate
+                        : {
+                            id: tabindex,
+                            itemsPerPage: pageSize,
+                            currentPage: pageNumber,
+                            totalItems: totalItems
+                          };
+                    let i = index
+                  "
+                  (dblclick)="doubleClick(itemObj)"
+                  (keydown.enter)="doubleClick(itemObj)"
+                  (click)="singleClick(i)"
+                  title="double click for detail view"
+                >
+                  <ng-container *ngFor="let item of popupsettings.columns">
+                    <td *ngIf="!item.hidden">
+                      <div
+                        title="{{ itemObj[item.title] }}"
+                        [ngStyle]="{ 'text-align': item.alignment }"
+                      >
+                        {{ itemObj[item.title] }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container *ngIf="popupsettings.multiSelect">
+                    <td>
+                      <span
+                        class="btn btn-primary float-right"
+                        (click)="onMultiSelectAdd(itemObj)"
+                        style="padding: 0%; width:100%; float: left"
+                      ><fa-icon [icon]="faArrowRight"></fa-icon></span>
+                    </td>
+                  </ng-container>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row clearfix" style="float: center; margin: 4px 0px">
+              <div
+                class="col-md-12"
+                style="width: 100%"
+                *ngIf="itemList.length"
+              >
+                <pagination-controls
+                  [id]="tabindex"
+                  (pageChange)="onPageChange($event)"
+                  [maxSize]="9"
+                  [directionLinks]="true"
+                  [autoHide]="true"
+                  [responsive]="true"
+                  previousLabel="Previous"
+                  nextLabel="Next"
+                  screenReaderPaginationLabel="Pagination"
+                  screenReaderPageLabel="page"
+                  screenReaderCurrentLabel="You're on page"
+                  style="font-size: 0.8rem"
+                ></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</form>

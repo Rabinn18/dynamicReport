@@ -1,0 +1,6 @@
+<form class="formgroup" [formGroup]="myform">
+  <input #checkboxInput formControlName="chkBox" type="checkbox" />
+  <span *ngIf="showLabel == 1">
+    <label for="checkboxInput">{{ label }}</label>
+  </span>
+</form>

@@ -1,0 +1,35 @@
+<!-- <div *ngIf="item.formatType == formatType.Date;else elseFormat">
+  <div title="{{ itemObj[fieldName] }}" [ngStyle]="item.style">
+    {{ itemObj[fieldName] | date: item.formatString }}
+  </div>
+</div>
+<ng-template #elseFormat>
+  <div title="{{ itemObj[fieldName] }}" [ngStyle]="item.style">
+    {{ itemObj[fieldName] }}
+  </div>
+</ng-template> -->
+<!-- <div [ngStyle]="item.style">{{ item | ColumnValue: itemObj:fieldName }}</div> -->
+<div *ngIf="itemObj" [ngStyle]="getColStyle(fieldName)">
+  <div [ngSwitch]="item.formatType">
+    <div *ngSwitchCase="formatType.Date">
+      <div title="{{ itemObj[fieldName] }}" [ngStyle]="item.style">
+        {{ itemObj[fieldName] | date : item.formatString }}
+      </div>
+    </div>
+    <div *ngSwitchCase="formatType.RoundingTwoDigit">
+      <div title="{{ itemObj[fieldName] }}" [ngStyle]="item.style">
+        {{ itemObj[fieldName] | number : "1.2-2" }}
+      </div>
+    </div>
+    <div *ngSwitchCase="formatType.Editable">
+      <div title="{{ itemObj[fieldName] }}" [ngStyle]="item.style" style=" white-space:pre; overflow: auto">
+        <input type="number" [(ngModel)]="itemObj[fieldName]" style="width: 100%" (change)="onFieldChange($event)" (keydown.Enter)="onFieldChange($event)"/>
+      </div>
+    </div>
+    <div *ngSwitchDefault>
+      <div title="{{ itemObj[fieldName] }}" [ngStyle]="item.style" style=" white-space:pre; overflow: auto" (click)="onClick($event)">
+        {{ itemObj[fieldName] }}
+      </div>
+    </div>
+  </div>
+</div>

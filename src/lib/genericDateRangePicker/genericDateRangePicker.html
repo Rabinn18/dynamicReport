@@ -1,0 +1,44 @@
+<ng-container
+  [ngTemplateOutlet]="currentTemplate"
+  [ngTemplateOutletContext]="{myForm:myForm,rangelist:rangelist,selectedRange:selectedRange,intheLastRangeOptions:intheLastRangeOptions}"
+></ng-container>
+<ng-template
+  #datePicker
+  let-myForm="myForm"
+  let-rangelist="rangelist"
+  let-selectedRange="selectedRange"
+  let-intheLastRangeOptions="intheLastRangeOptions"
+>
+  <div>
+    <form [formGroup]="myForm">
+      <div>
+        <select formControlName="selectedrange">
+          <option *ngFor="let item of rangelist" [ngValue]="item">
+            {{item}}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="selectedRange=='in the last'">
+        <div>
+          <input type="text" formControlName="inthelastno" />
+          <select formControlName="inthelastrange">
+            <option *ngFor="let opt of intheLastRangeOptions">{{opt}}</option>
+          </select>
+        </div>
+      </div>
+      <div *ngIf="selectedRange=='on'">
+        <input type="date" formControlName="on" />
+      </div>
+      <div *ngIf="selectedRange=='before'">
+        <input type="date" formControlName="before" />
+      </div>
+      <div *ngIf="selectedRange=='after'">
+        <input type="date" formControlName="after" />
+      </div>
+      <div *ngIf="selectedRange=='between'">
+        <input type="date" formControlName="startbetween" />
+        <input type="date" formControlName="endbetween" />
+      </div>
+    </form>
+  </div>
+</ng-template>
