@@ -55,17 +55,18 @@ export class GenericPopUpComponent {
   filterValueArray: Map<string, string> = new Map<string, string>();
   filterValue: string = '';
   filterOption: string = '';
+  gridForm:FormGroup;
   //
   constructor(private _http: HttpClient, private fb: FormBuilder, private reportService: ReportService,) {
     this.ItemList_Available = 0;
     console.log("POPUPSETTING", this.popupsettings);
+    this.gridForm = this.fb.group({
+      columnField: [{ value: '' }],
+      valueField: [{ value: '' }],
+    });
     
   }
 
-  gridForm: FormGroup = this.fb.group({
-    columnField: [{ value: '' }],
-    valueField: [{ value: '' }],
-  });
   show(
     billTo: string = '',
     isForCancelOrder: boolean = false,

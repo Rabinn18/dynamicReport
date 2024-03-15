@@ -97,7 +97,7 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
   filterValueArray: Map<string, string> = new Map<string, string>();
   filterValue: string = '';
   filterField: string = '';
-  _http: HttpClient = this.injector.get(HttpClient);
+  _http: HttpClient;
   trueValue: boolean = true;
   sizeValue: number = 9;
   defaultButtonMenus: DrillDownMenu[] = [];
@@ -166,6 +166,7 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
     public masterService: MasterService,
     private modalService: BsModalService
   ) {
+    this._http= this.injector.get(HttpClient);
     this.masterService.ItemList_Available = '0';
     this.triggerMultiSearch = debounce(this.triggerMultiSearch, 1000);
     this.triggerSearch = debounce(this.triggerSearch, 1000);
@@ -736,7 +737,7 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
     currentPage: this.pageNumber,
 
     totalItems:
-      this.masterService.simpleTablesettings.totalItems == 0 ??
+      this.masterService?.simpleTablesettings?.totalItems == 0 ??
       this.itemList.length,
   };
 

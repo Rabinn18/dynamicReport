@@ -14,6 +14,7 @@ export * from './lib/ng-Report-Filter/reportFilter.component';
 export * from './lib/ng-Report-Filter/ng-report-filter.module';
 
 export * from './lib/ng-Report-Filter/report.service';
+export * from './lib/Tables/masterService.class';
 //export * from './lib/common/Services';
 export * from './lib/ng-Report-Filter/report.service.interface';
 export * from './lib/generic-grid';
