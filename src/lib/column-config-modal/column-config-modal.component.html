@@ -1,0 +1,130 @@
+<div class="modal-backdrop" *ngIf="show" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <i class="bi bi-gear-fill me-2"></i>
+        Column Format Configuration
+      </h3>
+      <div class="buttons">
+        <button type="button" class="btn btn-secondary" (click)="resetToDefault()">
+          Reset to Default
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="saveSettings()"
+          [disabled]="!hasChanges()">
+          Save Changes
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="table-wrapper">
+        <table class="config-table">
+          <thead>
+            <tr>
+              <th style="width: 120px;">Column Name</th>
+              <th style="width: 150px;">Group Header</th>
+              <th style="width: 150px;">Column Title</th>
+              <th style="width: 80px;">Show</th>
+              <th style="width: 100px;">Col Position</th>
+              <th style="width: 100px;">Width</th>
+              <th style="width: 120px;">Alignment</th>
+              <th style="width: 120px;">Format Type</th>
+              <th style="width: 150px;">Format String</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let column of workingColumns; let i = index" [class.dynamic-column]="isDynamicColumn(column)" [hidden]="isDynamicColumn(column)">
+              <td style="width: 120px;">
+                {{ column.key }}
+                <span *ngIf="isDynamicColumn(column)" class="badge bg-info ms-1" title="Dynamic column (read-only)">Dynamic</span>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="column.titleGroup"
+                  [placeholder]="column.titleGroup || 'No group'"
+                  (change)="markDirty(column)"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="column.title"
+                  [placeholder]="column.title"
+                  (change)="markDirty(column)"
+                />
+              </td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  [checked]="isColumnVisible(column)"
+                  (change)="onHiddenChange(column)"
+                  class="form-check-input"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="column.colPosition"
+                  (change)="markDirty(column)"
+                  min="0"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="column.width"
+                  [placeholder]="column.width || 'auto'"
+                  (change)="markDirty(column)"
+                />
+              </td>
+              <td>
+                <select
+                  class="form-select"
+                  [(ngModel)]="column.alignment"
+                  (change)="markDirty(column)"
+                >
+                  <option value="left">Left</option>
+                  <option value="center">Center</option>
+                  <option value="right">Right</option>
+                </select>
+              </td>
+              <td>
+                <select
+                  class="form-select"
+                  [(ngModel)]="column.formatType"
+                  (change)="markDirty(column)"
+                >
+                  <option [value]="0">Text</option>
+                  <option [value]="1">Number</option>
+                  <option [value]="2">Date</option>
+                  <option [value]="3">Decimal (2 digits)</option>
+                  <!-- <option [value]="4">Editable</option> -->
+                </select>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="column.formatString"
+                  [placeholder]="column.formatString || ''"
+                  (change)="markDirty(column)"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

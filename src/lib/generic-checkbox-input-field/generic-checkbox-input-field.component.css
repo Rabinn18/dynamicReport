@@ -1,0 +1,19 @@
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 12px;
+}
+
+.checkbox-input {
+  margin-right: 10px;
+  accent-color: #6599ff; /* Ensures blue highlight if browser supports it */
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-label {
+  flex: 1;
+  user-select: none;
+}

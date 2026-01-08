@@ -51,6 +51,7 @@ export class ReportFilterCoponent implements OnInit, AfterViewInit {
   @Output() downloadExcel = new EventEmitter();
   @Output() SaveReport = new EventEmitter();
   @Output() DeleteReport = new EventEmitter();
+  @Output() downloadCSV = new EventEmitter();
   // @ViewChild(DaterangepickerDirective, { static: false })
   // pickerDirective: DaterangepickerDirective = {} as DaterangepickerDirective;
 
@@ -234,6 +235,10 @@ export class ReportFilterCoponent implements OnInit, AfterViewInit {
   excelDownload = () => {
     var reportParam = this.getFilterParam();
     this.downloadExcel.emit(reportParam);
+  };
+  csvDownload = () => {
+    var reportParam = this.getFilterParam();
+    this.downloadCSV.emit(reportParam);
   };
   addFieldGroup(selectedfield: filterField[]) {
     if (selectedfield.length == 0) return;

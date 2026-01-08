@@ -1,180 +1,6 @@
-<!-- <style>
-  /* select,
-  input {
-    border: 1px solid #ddd !important;
-    border-radius: 5px !important;
-    padding: 5px;
-  }
-  select,
-  input:focus-visible {
-    outline: none !important;
-  }
-  .buttons .buttons_input .btn {
-    line-height: 35px !important;
-    padding: 7px !important;
-  } */
-  /*   
-  .dropdown button{
-    border:none !important;
-  }
-  .dropdown button{
-    margin-bottom: 7px;
-  }
-  .dropdown-menu{
-    position: static;
-    border: none !important;
-  }
-  .dropdown{
-    position: static;
-  }
-  input[type=checkbox]{
-    margin-right: 5px;
-  }
-  
-details [open].styled {
-	transition: all 0.4s ease-in-out;
-	max-height: 20px;
-	overflow: hidden;
-}
-
-details.styled {
-	max-height: 500px;
-}
-
-details.styled summary {
-	outline: none;
-	cursor: pointer;
-} */
-  .accordion {
-    /* background-color: #eee; */
-    /* color: #666;
-   */
-    color: #313949;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 10px 0px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-    background: none;
-  }
-  
-  .accordion .glyphicon {
-    font-size: 12px;
-    pointer-events: none;
-  }
-  .panel {
-    opacity: 1;
-    visibility: visible;
-    height: 100%;
-    padding-right: 15px;
-    /* transition: 0.3s ; */
-  }
-  .active .panel {
-    opacity: 0;
-    visibility: hidden;
-    height: 0;
-  }
-  .glyphicon {
-    transition: 0.3s;
-  }
-  .active .glyphicon {
-    transform: rotate(-90deg);
-  }
-  .panel label input[type="checkbox"] {
-    margin-right: 5px;
-  }
-  .panel label {
-    padding-left: 5px;
-  }
-  .dotted-menu {
-    position: relative;
-    margin-right: 10px;
-  }
-  .dotted-menu .dot {
-    height: 3px;
-    width: 8px;
-    background-color: #313949;
-    /* border-radius: 50%; */
-    display: inline-block;
-    margin-right: 3px;
-    position: relative;
-    z-index: 9;
-  }
-  .dotted-menu:hover::after {
-    opacity: 0.7;
-  }
-  .dotted-menu:after {
-    content: "";
-    background: #fff !important;
-    /* transform: scale(0); */
-    opacity: 0;
-    transition-property: transform, opacity;
-    transition-duration: 0.15s;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    width: 26px;
-    height: 26px;
-    position: absolute;
-    top: 63%;
-    border-radius: 50%;
-    left: 44%;
-    /* opacity: .7; */
-    border: 1px solid #c7d2e2;
-    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 5%);
-    transform: translate(-50%, -50%);
-  }
-  .reportPopup {
-    position: absolute;
-    top: 18px;
-    list-style: none;
-    padding: 10px 30px 10px 15px;
-    background-color: #fff;
-    display: none;
-    border-radius: 5px;
-    border: 1px solid #d6d6d6;
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 15%);
-    right: 2px;
-  }
-  .reportOption .reportPopup {
-    display: block;
-    z-index: 99;
-  }
-  .reportPopup li {
-    padding: 5px 0;
-  }
-  .button-wrapper {
-    box-shadow: 0 -2px 4px -1px rgb(0 0 0 / 15%);
-    position: absolute;
-    width: 108%;
-    bottom: 0;
-    background: #fff;
-    padding: 15px;
-    box-sizing: border-box;
-    border-bottom-right-radius: 10px;
-    display: flex;
-    justify-content: space-around;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-</style> -->
 <style>
-  /* .panel-wrapper{
-opacity: 0;
-visibility: hidden;
-height: 0;
-
-  }
-  .active  .panel-wrapper{
-    opacity: 1;
-visibility: visible;
-height: 100%;
-
-  } */
   #filterindex button {
     border: none;
-    /* background: none; */
     font-weight: 700;
   }
 
@@ -186,7 +12,7 @@ height: 100%;
 <ng-container
   [ngTemplateOutlet]="newTemplate || filterTemplate"
   [ngTemplateOutletContext]="{UserReportList:UserReportList,selectedFields:selectedFields,
-    requiredFields:requiredFields,optionalFields:optionalFields,applyFiltering:applyFilter,excelDownloading:excelDownload}"
+    requiredFields:requiredFields,optionalFields:optionalFields,applyFiltering:applyFilter,excelDownloading:excelDownload,csvDownloading:csvDownload}"
 ></ng-container>
 
 <ng-template
@@ -197,6 +23,7 @@ height: 100%;
   let-optionalFields="optionalFields"
   let-applyFiltering="applyFiltering"
   let-excelDownloading="excelDownloading"
+  let-csvDownloading="csvDownloading"
 >
   <div
     class="row"
@@ -427,7 +254,7 @@ height: 100%;
                   style="margin-top: 1%; width: 90%; margin-bottom: 3%"
                 />
               </div>
-              <div
+              <!-- <div
                 *ngIf="fld.controlType=='multiselect' && fld.selected"
                 style="margin-top: 2%"
               >
@@ -438,7 +265,7 @@ height: 100%;
                   (onSelect)="onMultiSelect($event,fld)"
                 >
                 </generic-multiselect>
-              </div>
+              </div> -->
             </div>
           </div>
         </ng-template>

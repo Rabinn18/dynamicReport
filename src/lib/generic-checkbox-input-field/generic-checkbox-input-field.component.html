@@ -1,0 +1,10 @@
+<div class="checkbox-wrapper">
+  <input
+    type="checkbox"
+    [checked]="field.selected"
+    [disabled]="field.required"
+    (change)="toggleCheckbox($event)"
+    class="checkbox-input"
+  />
+  <label class="checkbox-label">{{ field.fieldName }}</label>
+</div>

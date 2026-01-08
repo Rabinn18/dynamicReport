@@ -21,6 +21,7 @@ import { GenericSimpleTableComponent } from './Tables/generic-Simple-Table.compo
 import { MasterService } from './Tables/masterService.class';
 import { ReportFilterPaging } from './Tables/reportFilterPaging.component';
 
+
 @NgModule({
   declarations: [
     NgReportGridComponent,

@@ -67,6 +67,7 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
   /** Input  */
   @Output() columnSettingChange = new EventEmitter();
   @Output() onContextMenu = new EventEmitter();
+  @Output() rowRightClick = new EventEmitter<{ event: MouseEvent; row: any; title: any }>();
   @Input('simpleTableConfig') isimpleTableConfig: GenericSimpleTableConfig =
     new GenericSimpleTableConfig();
 
@@ -104,6 +105,10 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
   modalref: any;
   modalForm!: FormGroup;
   mergereportHeaders: HeaderGroupClass[] = [];
+      contextMenuVisible = false;
+contextMenuPosition = { x: '0px', y: '0px' };
+selectedRow: any = null;
+selectedRowIndexContext: number | null = null;
   private columnSubject: Subject<TableColumnSettings[]> = new Subject<
     TableColumnSettings[]
   >();
@@ -174,6 +179,7 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
     this.masterService.simpleTableConfig = this.isimpleTableConfig;
     this.masterService.simpleTablesettings =
       this.isimpleTableConfig.simpleTablesettings;
+      console.log('this.masterService.simpleTablesettings gets here....', this.masterService.simpleTablesettings);
   }
   ngOnInit(): void {
     this.masterService.simpleTablesettings =
@@ -929,20 +935,20 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
   }
 
   //contextmenu section
-  contextMenuPosition = { x: '0px', y: '0px' };
+  // contextMenuPosition = { x: '0px', y: '0px' };
 
-  onContextMenuClick(event: MouseEvent, item: any) {
-    console.log({ event: event, item: item });
-    event.preventDefault();
-    if (this.masterService.simpleTablesettings.contextMenus.length == 0) return;
-    //this.onContextMenu.emit({ event: event, item: item });
-    console.log({ mouseposition: event, item: item });
-    this.contextMenuPosition.x = event.clientX + 'px';
-    this.contextMenuPosition.y = event.clientY + 'px';
-    this.contextMenu.menuData = { item: item };
-    this.contextMenu.menu?.focusFirstItem('mouse');
-    this.contextMenu.openMenu();
-  }
+  // onContextMenuClick(event: MouseEvent, item: any) {
+  //   console.log({ event: event, item: item });
+  //   event.preventDefault();
+  //   if (this.masterService.simpleTablesettings.contextMenus.length == 0) return;
+  //   //this.onContextMenu.emit({ event: event, item: item });
+  //   console.log({ mouseposition: event, item: item });
+  //   this.contextMenuPosition.x = event.clientX + 'px';
+  //   this.contextMenuPosition.y = event.clientY + 'px';
+  //   this.contextMenu.menuData = { item: item };
+  //   this.contextMenu.menu?.focusFirstItem('mouse');
+  //   this.contextMenu.openMenu();
+  // }
 
   onContextMenuAction1(mnu: DrillDownMenu, item: any) {
     //alert(`Click on Action 1 for ${mnu}`);
@@ -1093,5 +1099,15 @@ export class GenericSimpleTableComponent implements OnChanges, OnInit {
 
       }
     }
+  }
+
+
+    onContextMenuClick(event: MouseEvent, row: any): void {
+          console.log('masterService.simpleTablesettings.title',this.masterService.simpleTablesettings.title,'from library: Right click event:', event, 'Row data:', row);
+
+      debugger
+    event.preventDefault();
+    const title = this.masterService.simpleTablesettings.title;
+    this.rowRightClick.emit({ event, row, title});
   }
 }

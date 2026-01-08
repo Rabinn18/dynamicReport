@@ -1,0 +1,36 @@
+<div class="radio-wrapper">
+    <div class="report-header d-flex" 
+        (click)="showOptions = !showOptions"
+        style="cursor: pointer">
+      <p class="m-0">{{ field.fieldName  }}</p>
+      <i class=" ml-2 bi" 
+         [ngClass]="showOptions ? 'bi-chevron-up' : 'bi-chevron-down'" 
+         >
+      </i>
+    </div>
+
+    <div *ngIf="showOptions" class="report-options" [style.position]="position">
+        <div 
+          class="radio-option form-check"
+          *ngFor="let option of options; let i = index"
+          [ngStyle]="{ 'max-height': options.length > 5 ? '150px' : 'auto', 'overflow-y': options.length > 5 ? 'auto' : 'visible', 'border': options.length > 5 ? 'border: 1px solid #ddd' : 'none' }"
+        >
+          <input
+            type="radio"
+            class="form-check-input mt-0 pt-0"
+            [id]="field.fieldId + '_' + i"
+            [name]="field.fieldId"
+            [value]="option.value"
+            [(ngModel)]="selected"
+            (click)="onSelect(option.value)"
+          />
+          <label
+            class="form-check-label m-0 p-0"
+            [for]="field.fieldId + '_' + i"
+          >
+            {{ option.name }}
+          </label>
+        </div>
+
+    </div>
+</div>

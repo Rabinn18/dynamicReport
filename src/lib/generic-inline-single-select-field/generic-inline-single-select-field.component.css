@@ -1,0 +1,55 @@
+.fieldName{
+  /* margin: 0px */
+  font-size: 12px;
+}
+
+.filterBox {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0 10px;
+  line-height: 1.5rem;
+  cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  /* width: 200px; */
+  background-color: #fff;
+  font-size: 12px;
+}
+
+.selectionPopup {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  margin-top: 4px;
+  width: -webkit-fill-available;
+  z-index: 3;
+  font-size: 12px;
+}
+
+.selectionPopup ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.selectionPopup li {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.selectionPopup li:hover {
+  background-color: #336799;
+  color: white;
+}
+
+.selectionPopup li.selected {
+  background-color: #336799;
+  color: white;
+  font-weight: bold;
+}

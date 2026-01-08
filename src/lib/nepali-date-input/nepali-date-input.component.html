@@ -1,0 +1,76 @@
+    <div class="nepali-date-container" [class.calendar-open]="showCalendar" [style.width]="width">
+      <div class="input-wrapper">
+        <input
+          type="text"
+          [style.width]="width"
+          [class]="inputClass"
+          [id]="id"
+          [placeholder]="placeholder"
+          [readonly]="true"
+          [disabled]="disabled"
+          [(ngModel)]="displayValue"
+          (blur)="onInputBlur($event)"
+          (input)="onInputChange($event)"
+          (focus)="onInputFocus()"
+          autocomplete="off">
+        <i class="bi bi-calendar3 nepali-calendar-icon"
+           (click)="toggleCalendar()"
+           *ngIf="showCalendarIcon && !disabled"
+           [class.active]="showCalendar"></i>
+      </div>
+
+      <div *ngIf="showCalendar" class="nepali-calendar-popup" #calendarPopup [style.position]="popupPosition">
+
+        <!-- Calendar Header -->
+        <div class="calendar-header">
+          <button type="button" class="nav-btn" (click)="previousMonth()" [disabled]="!canNavigatePrevious()">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <div class="month-year">
+            <select class="month-select" [(ngModel)]="currentMonth" (change)="onMonthChange()" disabled>
+              <option *ngFor="let month of nepaliMonths; let i = index" [value]="i">
+                {{ month }}
+              </option>
+            </select>
+            <select class="year-select" [(ngModel)]="currentYear" (change)="onYearChange()" disabled>
+              <option *ngFor="let year of availableYears" [value]="year">
+                {{ year }}
+              </option>
+            </select>
+          </div>
+          <button type="button" class="nav-btn" (click)="nextMonth()" [disabled]="!canNavigateNext()">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-grid">
+          <!-- Day Headers -->
+          <div class="day-header" *ngFor="let day of dayHeaders">{{ day }}</div>
+          
+          <!-- Calendar Days -->
+          <div
+            *ngFor="let date of calendarDates"
+            class="calendar-day"
+            [class.other-month]="!date.isCurrentMonth"
+            [class.today]="date.isToday"
+            [class.selected]="date.isSelected"
+            [class.disabled]="date.isDisabled || disabled"
+            (click)="selectDate(date)">
+            {{ date.day }}
+          </div>
+        </div>
+
+        <!-- Calendar Footer -->
+        <!-- <div class="calendar-footer">
+          <button type="button" class="today-btn" (click)="selectToday()">
+            आज (Today)
+          </button>
+          <button type="button" class="clear-btn" (click)="clearDate()">
+            Clear
+          </button>
+        </div> -->
+      </div>
+
+      <div *ngIf="showCalendar" #calendarScrollAnchor style="height: 1px;"></div>
+    </div>

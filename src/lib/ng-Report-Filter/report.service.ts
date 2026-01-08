@@ -149,6 +149,22 @@ export class ReportService implements OnInit {
     // });
     // return this.http.post<any>(api, report).toPromise();
   }
+
+    downloadCSVReport(report: filterReport, httpHeaders:HttpHeaders|undefined =undefined) {
+    let api = `${this.apiUrl}/reportapi/api/v2/getReportInCsv`;
+    return this.http
+      .post<any>(api, report, {
+        responseType: 'blob' as 'json',
+        observe: 'response',
+        headers: httpHeaders
+      })
+      .pipe(
+        map((result: HttpResponse<Blob>) => {
+          console.log(result);
+          return result;
+        })
+      );
+    }
   checkfilterReportForDesign(report: filterReport) {
     report.fieldgroup.forEach((x) =>
       x.filterFields.forEach((fld) => {

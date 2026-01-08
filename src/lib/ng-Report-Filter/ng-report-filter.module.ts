@@ -25,6 +25,18 @@ import { AuthService, GlobalState } from '../Services';
 import { ArrayToMultiSelectPipe } from '../pipes/arrayToMultSelect.pipe';
 import { DropdownMultiSelectModule } from '../dropdownMultiSelect/dropdonwMultiSelect.module';
 import { GenericCheckboxModule } from '../genericCheckbox/genericCheckbox.module';
+import { GenericInlineSelectPopupFieldModule } from '../generic-inline-select-popup-field/generic-inline-select-popup-field-module';
+import { GenericInlineSingleSelectFieldModule } from '../generic-inline-single-select-field/generic-inline-single-select-field-module';
+import { GenericCheckboxInputFieldModule } from '../generic-checkbox-input-field/generic-checkbox-input-field-module';
+import { GenericDateInputFieldModule } from '../generic-date-input-field/generic-date-input-field-module';
+import { GenericMultiSelectPopoverInputFieldModule } from '../generic-multi-select-popover-input-field/generic-multi-select-popover-input-field-module';
+import { GenericRangeInputFieldModule } from '../generic-range-input-field/ganeric-range-input-field-module';
+import { NepaliDateInputComponent } from '../nepali-date-input/nepali-date-input.component';
+import { GenericReportDynamicModule } from '../generic-report-dynamic-table/generic-report-dynamic-table-module';
+import { GenericRadioCheckboxInputFieldModule } from '../generic-radio-checkbox-input-field/generic-radio-checkbox-input-field-module';
+import { ColumnConfigModalModule } from '../column-config-modal/column-config-modal-module';
+
+
 
 @NgModule({
   declarations: [
@@ -48,6 +60,15 @@ import { GenericCheckboxModule } from '../genericCheckbox/genericCheckbox.module
     NgMultiSelectDropDownModule,
     DropdownMultiSelectModule,
     GenericCheckboxModule,
+    GenericInlineSelectPopupFieldModule,
+    GenericInlineSingleSelectFieldModule,
+    GenericCheckboxInputFieldModule,
+    GenericDateInputFieldModule,
+    GenericRangeInputFieldModule,
+    GenericMultiSelectPopoverInputFieldModule,
+    GenericRadioCheckboxInputFieldModule,
+    GenericReportDynamicModule,
+    ColumnConfigModalModule
   ],
   exports: [
     ReportFilterCoponent,

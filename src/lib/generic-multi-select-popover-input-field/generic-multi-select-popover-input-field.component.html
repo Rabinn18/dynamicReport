@@ -1,0 +1,161 @@
+<div class="filterBox selection" [ngClass]="this.field.selected == true ? 'my-auto' : ''">
+  <span style="cursor: pointer" (click)="toggleSelectionPopup($event, '#fff')">{{this.fieldName}}</span>
+  <div>
+    <div class="selected-wrapper ml-3">
+      <span class="selectedCount" *ngIf="this.field.controlType =='multiselect'" (mouseover)="this.togglePopup($event, selectedValues, '#CFE8FF')">
+        {{ selectedValues.length === valueArray.length && selectedValues.length > 0 ? 'All Selected' : '(' + selectedValues.length + ') Selected' }}
+      </span>
+      <span class="selectedCount" *ngIf="this.field.controlType =='singleselect'">
+        {{ selectedSingle || 'Select an option' }}
+      </span>
+    </div>
+    <!-- <i class="bi bi-chevron-down chevron" (click)="toggleSelectionPopup($event, '#fff')"></i> -->
+    <i class="bi" 
+      [ngClass]="showSelectionPopup ? 'bi-chevron-up' : 'bi-chevron-down'" 
+      style="cursor: pointer"
+      (click)="toggleSelectionPopup($event, '#fff')"
+    ></i>
+  </div>
+</div>
+
+<div class="selectionPopup" *ngIf="showSelectionPopup" [ngStyle]="selectionPopupStyle">
+  <!-- Search Section -->
+
+  <div class="search mx-0 px-0 d-flex justify-content-between">
+      <div class="select">
+        <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle my-auto" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 25px !important; background-color: #fff; color: black; width: 120px; font-size: 11px;">
+    <span class="my-0" style="color: rgba(207, 207, 207, 0.7);">Select Field</span>
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item">Name</a>
+    <a class="dropdown-item">Value</a>
+  </div>
+</div>
+      </div>
+    <div class="input-group mb-1 ml-2 mr-0 px-0">
+      <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Enter Keyword" 
+        aria-label="Search here" 
+        aria-describedby="basic-addon1"
+        [value]="searchTerm"
+        (input)="onSearchChange($event)">
+    </div>
+  </div>
+
+  <!-- List Section with Headers and Three Columns -->
+  <div class="divList">
+    <!-- Column Headers -->
+    <div class="list-header">
+      <div class="header-checkbox" *ngIf="this.field.controlType =='multiselect'">
+        <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="checkAll"
+          [checked]="selectedValues.length === valueArray.length && selectedValues.length > 0"
+          (change)="toggleAllTempValues($event)"
+        />
+      </div>
+      </div>
+<div class="header-name">
+  <ng-container *ngIf="fieldName === 'Item Selection'; else nameLabel">
+    <span>Item Code</span>
+  </ng-container>
+  <ng-template #nameLabel>
+    Name
+  </ng-template>
+</div>
+
+<div class="header-value">
+  <ng-container *ngIf="fieldName === 'Item Selection'; else valueLabel">
+    <span>Description</span>
+  </ng-container>
+  <ng-template #valueLabel>
+    Value
+  </ng-template>
+</div>
+
+    </div>
+    
+    <div class="list-container">
+      <div class="list-item" *ngFor="let option of filteredOptions; let i = index" (click)="applyValueSelectionSingle(option.value, option.name)">
+        <div class="checkbox-section ml-2" *ngIf="this.field.controlType =='multiselect'">
+          <input
+            type="checkbox"
+            [id]="'checkbox-' + i"
+            [value]="option.name"
+            [checked]="isChecked(option.value)"
+            (change)="toggleTempValueSelection(option.value, $event)"
+          />
+        </div>
+        <div class="name-column">
+          <label [for]="'checkbox-' + i" class="item-name">{{ option.name }}</label>
+        </div>
+        <div class="value-column">
+          <span class="item-value">{{ option.value }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-section d-flex justify-content-between align-items-center">
+      <!-- Pagination Section -->
+  <div class="pagination-section mb-0 pb-0" *ngIf="totalPages > 1">
+    <div class="pagination-controls">
+      <button 
+        type="button" 
+        class="btn btn-sm pagination-btn" 
+        (click)="previousPage()" 
+        [disabled]="currentPage === 1">
+        Previous
+      </button>
+      
+      <div class="page-numbers">
+        <button 
+          type="button" 
+          class="btn btn-sm page-number" 
+          *ngFor="let page of getPageNumbers()" 
+          [disabled]="page === '...'"
+          (click)="onPageClick(page)"
+          [class.active]="page === currentPage"
+          [class.ellipsis]="page === '...'">
+          {{ page }}
+        </button>
+      </div>
+      
+      <button 
+        type="button" 
+        class="btn btn-sm pagination-btn" 
+        (click)="nextPage()" 
+        [disabled]="currentPage === totalPages">
+        Next
+      </button>
+    </div>
+  </div>
+
+  <!-- Select All and Apply Section -->
+  <div class="selectAll mb-0 pb-0">
+    <div class="form-check-container">
+      <div class="button-group">
+        <button type="button" class="btn btn-secondary cancelButton" (click)="cancelValueSelection()">Cancel</button>
+        <button type="button" class="btn btn-primary applyButton" (click)="applyValueSelection()"  *ngIf="this.field.controlType =='multiselect'">Apply</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div>
+
+<div
+  *ngIf="showPopup"
+  class="custom-popup"
+  [ngStyle]="popupStyle"
+  [style.--popup-arrow-color]="popupArrowColor">
+  <ul>
+    <li *ngFor="let item of popupData">{{ item }}</li>
+  </ul>
+</div>

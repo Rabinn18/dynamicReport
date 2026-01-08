@@ -1,0 +1,27 @@
+<div class="filter">
+  <div class="title">{{ field.fieldName }}</div>
+  <div class="rangeFields">
+    <div class="field1">
+      <input
+        [type]="field.inputType || 'text'"
+        class="form-control"
+        placeholder="From"
+        [(ngModel)]="fromValue"
+        (ngModelChange)="onRangeChange()"
+        aria-label="From"
+        aria-describedby="field1-range"
+      />
+    </div>
+    <div class="field2">
+      <input
+        [type]="field.inputType || 'text'"
+        class="form-control"
+        placeholder="To"
+        [(ngModel)]="toValue"
+        (ngModelChange)="onRangeChange()"
+        aria-label="To"
+        aria-describedby="field2-range"
+      />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="dropdown-field">
+    <p class="fieldName my-0 p-0">{{ this.fieldName }}</p>
+  <div class="filterBox" (click)="toggleSelectionPopup()">
+    <span>{{ getSelectedLabel() }}</span>
+      <i class="ms-1 bi" 
+     [ngClass]="showSelectionPopup ? 'bi-chevron-up' : 'bi-chevron-down'" 
+     style="cursor: pointer"
+     >
+  </i>
+  </div>
+</div>
+
+    
+    <div class="selectionPopup" *ngIf="showSelectionPopup">
+      <ul>
+        <li
+          *ngFor="let option of options"
+          (click)="onSelect(option.value)"
+          [class.selected]="option.value === selected"
+        >
+          {{ option.name }}
+        </li>
+      </ul>
+    </div>
+

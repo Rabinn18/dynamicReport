@@ -9,12 +9,12 @@
   justify-content: space-between;
   align-items: center;
   font-family: "Lato", sans-serif;
-  border-top-left-radius: 15px !important;
-  border-top-right-radius: 15px !important;
+  // border-top-left-radius: 15px !important;
+  // border-top-right-radius: 15px !important;
   padding: 0 0 0 40px !important;
 }
 thead tr th {
-  border-right: 0.5px solid #ddd;
+  // border-right: 0.5px solid #ddd;
   white-space: break-spaces !important;
 }
 thead tr th input {
@@ -25,10 +25,10 @@ thead tr th input {
   display: none;
 }
 .card {
-  border-top-left-radius: 15px !important;
-  border-top-right-radius: 15px !important;
-  border-bottom-left-radius: 15px !important;
-  border-bottom-right-radius: 15px !important;
+  // border-top-left-radius: 15px !important;
+  // border-top-right-radius: 15px !important;
+  // border-bottom-left-radius: 15px !important;
+  // border-bottom-right-radius: 15px !important;
 }
 .card-footer {
   border-bottom-left-radius: 15px !important;
@@ -38,7 +38,7 @@ thead tr th input {
   padding: 0 0px !important;
   /* max-height: 625px !important;
  */
-  height: 62vh;
+  height: 65vh;
 }
 
 .card-footer {
@@ -69,12 +69,12 @@ thead tr th input {
   border-bottom: 0.5px solid #ddd !important;
 }
 thead {
-  border-right: 0.5px solid #ddd;
-  border-left: 0.5px solid #ddd;
+  // border-right: 0.5px solid #ddd;
+  // border-left: 0.5px solid #ddd;
 }
 thead tr th,
 tfoot tr td {
-  line-height: 20px !important;
+  // line-height: 20px !important;
 
 }
 .table td {
@@ -199,7 +199,7 @@ tbody tr {
 
 .table th {
   color: #000;
-  font-weight: 600;
+  // font-weight: 600;
 }
 .table td {
   /* color: #212529; */
@@ -220,7 +220,7 @@ tbody button.btn:hover {
   background-color: #209e91;
 }
 .table > tbody > tr > td {
-  line-height: 20px !important;
+  // line-height: 20px !important;
   padding: 1px !important;
 }
 
@@ -235,13 +235,13 @@ ul.ngx-pagination {
   background-color: none !important;
 }
 .card-header span {
-  font-size: 16px;
+  font-size: 12px;
 }
 table .thead {
   width: 99.6% !important;
 }
 table thead {
-  border-right: 0.5px solid #ddd !important ;
+  // border-right: 0.5px solid #ddd !important ;
 }
 .form-control::-webkit-input-placeholder {
   font-weight: 100 !important;
@@ -285,16 +285,17 @@ body {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #1a242f;
+  // background-color: #1a242f;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 60px;
+  font-size: 12px !important;
 }
 
 .sidenav a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 12px;
   color: #818181;
   display: block;
   transition: 0.3s;
@@ -309,7 +310,7 @@ body {
   position: absolute;
   top: 0;
   right: 25px;
-  font-size: 36px;
+  // font-size: 36px;
   margin-left: 50px;
 }
 
@@ -318,7 +319,7 @@ body {
 }
 
 .fa-bars {
-  font-size: 25px;
+  font-size: 12px;
   cursor: pointer;
   margin-left: 5px;
 }
@@ -378,11 +379,11 @@ tr th {
   font-weight: bold;
 }
 
-tr td {
-  padding: 0px 2px;
-  border-top: 0px;
-  line-height: 31px;
-}
+// tr td {
+//   padding: 0px 2px;
+//   border-top: 0px;
+//   line-height: 31px;
+// }
 
 tbody:hover {
   background-color: #e0e0e0;
@@ -479,7 +480,7 @@ button:disabled {
 ::ng-deep .ngx-pagination{
   li {
     a{
-      font-size: 14px !important;
+      font-size: 12px !important;
     }
 
   }

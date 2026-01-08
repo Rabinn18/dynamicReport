@@ -1,0 +1,343 @@
+<!-- generic-report-dynamic-table.component.html -->
+<div class="report-table-container">
+          <button class="btn btn-info btn-toggler" id="toggleButton" (click)="toggleColumnSearch()"
+        *ngIf="displayData.length != 0 || loading" 
+        [ngStyle]="{ 'background': this.showColumnSearch ? '#336799' : '#5c7a96' }">
+    <i class="bi bi-funnel"></i>
+  </button>
+  <!-- Header Section -->
+  <!-- <div class="table-header">
+    <div class="table-title">
+      <p>{{ title }}</p>
+    </div>
+    <div class="table-controls">
+      <div class="search-container" *ngIf="enableSearch">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            placeholder="Search in table..."
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange($event.target.value)"
+            class="search-input"
+          />
+          <button 
+            *ngIf="searchTerm" 
+            class="clear-search"
+            (click)="clearSearch()"
+            type="button"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Table Container with Fixed Header -->
+  <div class="table-wrapper" #tableContainer>
+    <table class="modern-table">
+      <!-- Fixed Header - Single Row Headers -->
+      <thead class="table-head-fixed" *ngIf="!hasGroupedHeaders" 
+       [ngStyle]="{
+         'font-family': REPHEADING_FontName,
+         'font-size': REPHEADING_Fontsize
+       }">
+        <tr>
+          <th *ngIf="tableConfig?.showSerialNo" class="serial-column">
+            <div class="th-content">SN</div>
+          </th>
+          <th 
+            *ngFor="let column of basicColumns" 
+            [ngStyle]="{ 
+              'width': column.width || 'auto',
+              'text-align': column.alignment || 'left'
+            }"
+            class="sortable-header"
+            (click)="onSort(column)"
+          >
+            <div class="th-content">
+  <span>{{ column.title }}</span>
+
+  <div class="sort-icons" [class.show-default]="column.sortOrder === 'none' || !column.sortOrder">
+    <i class="bi bi-sort-down" *ngIf="column.sortOrder === 'desc'"></i>
+    <i class="bi bi-sort-up" *ngIf="column.sortOrder === 'asc'"></i>
+
+    <!-- default icon (hidden until hover) -->
+    <i class="bi bi-text-center default-sort-icon"
+       *ngIf="column.sortOrder === 'none' || !column.sortOrder"></i>
+  </div>
+</div>
+          </th>
+          <th *ngIf="tableConfig?.showActions" class="actions-column">
+            <div class="th-content">Actions</div>
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Fixed Header - Grouped Headers (Multi-row) -->
+      <thead class="table-head-fixed grouped-header" *ngIf="hasGroupedHeaders">
+        <!-- Main Group Header Row -->
+          <tr class="group-header-row" 
+      [ngStyle]="{
+        'font-family': REPHEADING_FontName,
+        'font-size': REPHEADING_Fontsize
+      }">
+          <th *ngIf="tableConfig?.showSerialNo" class="serial-column" rowspan="2">
+            <div class="th-content">SN</div>
+          </th>
+          <th 
+            *ngFor="let group of groupedHeaders"
+            [attr.colspan]="group.colspan"
+            class="group-header"
+            [ngClass]="{'single-column': group.colspan === 1, 'multi-column': group.colspan > 1}"
+          >
+            <div class="th-content group-title" *ngIf="group.group">
+              {{ group.group }}
+            </div>
+            <!-- For single columns without groups, show the column title -->
+            <div class="th-content sortable-header" *ngIf="!group.group && group.columns.length === 1" (click)="onSort(group.columns[0])">
+              <span>{{ group.columns[0].title }}</span>
+              <!-- <div class="sort-icons">
+                <i class="fas fa-sort" *ngIf="group.columns[0].sortOrder === 'none' || !group.columns[0].sortOrder"></i>
+                <i class="fas fa-sort-up" *ngIf="group.columns[0].sortOrder === 'asc'"></i>
+                <i class="fas fa-sort-down" *ngIf="group.columns[0].sortOrder === 'desc'"></i>
+              </div> -->
+            </div>
+          </th>
+          <th *ngIf="tableConfig?.showActions" class="actions-column" rowspan="2">
+            <div class="th-content">Actions</div>
+          </th>
+        </tr>
+        
+        <!-- Sub Header Row for grouped columns -->
+          <tr class="sub-header-row"
+      [ngStyle]="{
+        'font-family': REPHEADING_FontName,
+        'font-size': REPHEADING_Fontsize
+      }">
+          <ng-container *ngFor="let group of groupedHeaders">
+            <!-- For single columns, create empty header cell to maintain alignment -->
+            <!-- <th *ngIf="!group.group || group.columns.length === 1" class="sub-header empty-sub-header">
+            </th> -->
+            <!-- For grouped columns, create individual header cells for each sub-column -->
+            <th 
+              *ngFor="let column of group.columns"
+              class="sub-header sub-column sortable-header"
+              [ngStyle]="{ 
+                'width': column.width || 'auto',
+                'text-align': column.alignment || 'left'
+              }"
+              (click)="onSort(column)"
+              [ngClass]="{'grouped-sub-header': group.group && group.columns.length > 1}"
+            >
+              <div class="th-content" *ngIf="group.group && group.columns.length > 1">
+                <span>{{ column.title }}</span>
+                                <!-- <div class="sort-icons" [class.show-default]="column.sortOrder === 'none' || !column.sortOrder">
+                  <i class="bi bi-sort-down" *ngIf="column.sortOrder === 'desc'"></i>
+                  <i class="bi bi-sort-up" *ngIf="column.sortOrder === 'asc'"></i>
+                  <i class="bi bi-text-center default-sort-icon"
+                     *ngIf="column.sortOrder === 'none' || !column.sortOrder"></i>
+                </div> -->
+              </div>
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+
+
+
+      <!-- Column Search Row -->
+<tbody class="column-search-row" *ngIf="showColumnSearch" [ngStyle]="{
+         'font-family': REPHEADING_FontName,
+         'font-size': REPHEADING_Fontsize,
+         'margin-top': '10px'
+       }">
+  <tr>
+    <td *ngIf="tableConfig?.showSerialNo"></td>
+    <td *ngFor="let column of displayColumns" class="search-cell">
+      <div class="column-search-wrapper">
+        <input 
+          type="text" 
+          class="column-search-input"
+          [(ngModel)]="columnSearchTerms[column.key]"
+          (input)="onColumnSearch(column.key, columnSearchTerms[column.key] || '')"
+        />
+        <i class="bi bi-x-circle clear-column-search" 
+           *ngIf="columnSearchTerms[column.key]"
+           (click)="clearColumnSearch(column.key)"></i>
+      </div>
+    </td>
+    <td *ngIf="tableConfig?.showActions"></td>
+  </tr>
+</tbody>
+
+      <!-- Scrollable Body -->
+      <tbody class="table-body-scrollable">
+          <tr *ngFor="let row of displayData; let i = index; trackBy: trackByFn"
+      class="table-row"
+      [class.even-row]="i % 2 === 0"
+      [ngStyle]="{
+        'font-family': REPDETAIL_FontName,
+        'font-size': REPDETAIL_FontSize
+      }"
+      (contextmenu)="onContextMenuClick($event, row)">
+
+          <td *ngIf="tableConfig?.showSerialNo" class="serial-cell">
+            {{ getSerialNumber(i) }}
+          </td>
+
+                      <!-- <td >static data {{i}}</td>
+          <td 
+            *ngFor="let column of getAllDisplayColumns()"
+            [ngStyle]="{ 'text-align': column.alignment || 'left' }"
+            class="data-cell"
+            [ngClass]="{'number-cell': column.formatType === 1 || column.formatType === 3}"
+            [title]="formatCellValue(row[column.key], column)"
+          >
+            {{ formatCellValue(row[column.key], column) }}
+              {{ column.key }}: {{ row[column.key] }}
+          </td> -->
+          
+          <!-- Data cells for both grouped and non-grouped headers -->
+          <td 
+            *ngFor="let column of displayColumns; trackBy: trackByColumn"
+            [ngStyle]="{ 'text-align': column.alignment || 'left' }"
+            class="data-cell"
+            [ngClass]="{'number-cell': column.formatType === 1 || column.formatType === 3}"
+            [title]="formatCellValue(row[column.key], column)"
+          >
+            {{ formatCellValue(row[column.key], column) }}
+          </td>
+          
+          <td *ngIf="tableConfig?.showActions" class="actions-cell">
+            <div class="action-buttons">
+              <button 
+                *ngFor="let action of tableConfig.actionKeys"
+                class="action-btn"
+                [class]="'btn-' + action.type"
+                (click)="onAction(action.text, row, i)"
+              >
+                <i *ngIf="action.icon" [class]="action.icon"></i>
+                {{ action.title }}
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- No Data Row -->
+         <tr *ngIf="displayData.length === 0 && !loading" class="no-data-row">
+    <td [attr.colspan]="getTotalColspan()">
+      <div class="no-data-message">
+        <i class="fas fa-inbox"></i>
+        <p *ngIf="searchTerm; else noDataDefault">
+          No results found for "{{ searchTerm }}"
+        </p>
+        <ng-template #noDataDefault>
+          <p>No data available</p>
+        </ng-template>
+        <!-- Only show clear search button for internal search -->
+        <button *ngIf="searchTerm && enableSearch && !externalSearchTerm && externalSearchTerm !== ''" 
+                class="clear-search-btn" 
+                (click)="clearSearch()">
+          Clear Search
+        </button>
+      </div>
+    </td>
+  </tr>
+      </tbody>
+
+      <!-- Fixed Footer for Totals -->
+      <tfoot class="table-foot-fixed" *ngIf="totalRow && Object.keys(totalRow).length > 0"
+       [ngStyle]="{
+         'font-family': REPTOTAL_FontName,
+         'font-size': REPTOTAL_Fontsize
+       }">
+        <tr class="total-row">
+          <td *ngIf="tableConfig?.showSerialNo" class="total-cell">
+            Total
+          </td>
+          <td 
+            *ngFor="let column of displayColumns"
+            [ngStyle]="{ 'text-align': column.alignment || 'left' }"
+            class="total-cell"
+          >
+            {{ formatCellValue(totalRow[column.key], column) || '' }}
+          </td>
+          <td *ngIf="tableConfig?.showActions" class="total-cell">
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="table-footer">
+    <div class="pagination-info">
+      <span *ngIf="searchTerm" class="search-info">
+        <i class="fas fa-filter"></i>
+        Filtered: {{ filteredData.length }} of {{ originalData.length }} |
+      </span>
+      Showing {{ (currentPage - 1) * pageSize + 1 }} to 
+      {{ Math.min(currentPage * pageSize, totalItems) }} of 
+      {{ totalItems }} entries
+    </div>
+    
+    <div class="pagination-controls">
+      <button 
+        class="page-btn"
+        [disabled]="currentPage === 1"
+        (click)="previousPage()"
+      >
+        <i class="fas fa-chevron-left"></i>
+        Previous
+      </button>
+
+      <div class="page-numbers">
+        <button 
+          class="page-number"
+          *ngFor="let page of getPaginationNumbers()"
+          [disabled]="page === '...'"
+          [class.active]="page === currentPage"
+          (click)="page !== '...' && goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <button 
+        class="page-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="nextPage()"
+      >
+        Next
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+        <div class="page-size-selector">
+      <label>Show:</label>
+      <select [(ngModel)]="pageSize" (change)="onPageSizeChange(pageSize)">
+        <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+      </select>
+      <label>Rows Per Page</label>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading....</p>
+    </div>
+  </div>
+
+  <!-- Debug Info (remove in production) -->
+  <!-- <div class="debug-info" *ngIf="true" style="position: fixed; bottom: 10px; right: 10px; background: #000; color: #fff; padding: 10px; font-size: 12px;">
+    <button (click)="debugTableState()">Debug</button>
+    <div>Columns: {{ displayColumns.length }}</div>
+    <div>Data: {{ displayData.length }}</div>
+    <div>Grouped: {{ hasGroupedHeaders }}</div>
+    <div>Display Data Keys: {{ displayData.length > 0 ? Object.keys(displayData[0]).slice(0,3).join(', ') : 'No Data' }}</div>
+  </div> -->
+</div>

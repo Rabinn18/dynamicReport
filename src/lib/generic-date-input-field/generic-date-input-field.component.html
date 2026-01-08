@@ -1,0 +1,392 @@
+<div class="date-filter-wrapper"
+     (mouseenter)="showHover = true"
+     (mouseleave)="showHover = false">
+
+  <!-- Main clickable field -->
+  <div class="dateFilter" (click)="openPopup($event)">
+    <span>{{ field.fieldName }} | {{ getDisplayDate() }}</span>
+    <i class="bi bi-calendar-fill ml-2"></i>
+  </div>
+
+  <!-- Hover popup (BS date preview) -->
+  <div class="hover-popup" *ngIf="showHover && !showPopup && getSelectedDisplayDateHover()">
+    {{ getSelectedDisplayDateHover() }}
+  </div>
+</div>
+
+<!-- Popup -->
+<div class="date-popup" *ngIf="showPopup" (click)="$event.stopPropagation()">
+  <!-- Single date selection -->
+  <div *ngIf="field?.controlType === 'asOnDate'" style="width: 300px; padding: 10px;">
+    <!-- Calendar wrapper for both AD and BS -->
+    <div class="calendar-wrapper" style="align-items: center;">
+      <!-- Date Field Display -->
+      <div class="dateField">
+        <span>{{ getSelectedDisplayDate() }}</span>
+        <i class="bi bi-calendar-fill"></i>
+      </div>
+      
+      <!-- AD Calendar -->
+      <div class="custom-calendar" *ngIf="!showBS">
+        <div class="calendar-dropdowns">
+          <i class="bi bi-chevron-left chev" (click)="navigateMonth('prev')"></i>
+          <div>
+            <select [(ngModel)]="selectedMonth" (change)="onDateChange()" class="month-select">
+              <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+            </select>
+            <select [(ngModel)]="selectedYear" (change)="onDateChange()" class="year-select">
+              <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+          </div>
+          <i class="bi bi-chevron-right chev" (click)="navigateMonth('next')"></i>
+        </div>
+        <div class="calendar-grid">
+          <div class="calendar-header">
+            <div class="day-header">S</div>
+            <div class="day-header">M</div>
+            <div class="day-header">T</div>
+            <div class="day-header">W</div>
+            <div class="day-header">T</div>
+            <div class="day-header">F</div>
+            <div class="day-header">S</div>
+          </div>
+          <!-- <div class="calendar-days">
+            <div 
+              *ngFor="let day of getDaysInMonth(selectedYear, selectedMonth)" 
+              class="day-cell"
+              [class.selected]="day === selectedDay"
+              [class.today]="isToday(selectedYear, selectedMonth, day)"
+              (click)="selectDay(day)">
+              {{ day }}
+            </div>
+          </div> -->
+          <div class="calendar-days">
+  <div *ngFor="let day of getCalendarGrid(selectedYear, selectedMonth)" 
+       class="day-cell"
+       [class.selected]="day === selectedDay"
+       [class.today]="day && isToday(selectedYear, selectedMonth, day)"
+       [class.empty]="day === null"
+       (click)="day && selectDay(day)">
+    {{ day || '' }}
+  </div>
+</div>
+        </div>
+      </div>
+
+      <!-- BS Calendar -->
+      <div class="custom-calendar" *ngIf="showBS">
+        <div class="calendar-dropdowns">
+          <i class="bi bi-chevron-left chev" (click)="navigateBSMonth('prev')"></i>
+          <div>
+            <select [(ngModel)]="selectedBSMonth" (change)="onBSDateChange()" class="month-select" disabled>
+              <option *ngFor="let month of bsMonths; let i = index" [value]="i">{{ month }}</option>
+            </select>
+            <select [(ngModel)]="selectedBSYear" (change)="onBSDateChange()" class="year-select" disabled>
+              <option *ngFor="let year of bsYears" [value]="year">{{ year }}</option>
+            </select>
+          </div>
+          <i class="bi bi-chevron-right chev" (click)="navigateBSMonth('next')"></i>
+        </div>
+            <!-- <div class="calendar-dropdowns">
+              <i class="bi bi-chevron-left chev" (click)="navigateBSMonth('prev')"></i>
+              <div>
+                <select [(ngModel)]="startBSMonth" class="month-select" disabled>
+                  <option *ngFor="let month of bsMonths; let i = index" [value]="i">{{ month }}</option>
+                </select>
+                <select [(ngModel)]="startBSYear" class="year-select" disabled>
+                  <option *ngFor="let year of bsYears" [value]="year">{{ year }}</option>
+                </select>
+              </div>
+              <i class="bi bi-chevron-right chev" (click)="navigateBSMonth('next')"></i>
+            </div> -->
+        <div class="calendar-grid">
+          <div class="calendar-header">
+            <div class="day-header">आइत</div>
+            <div class="day-header">सोम</div>
+            <div class="day-header">मंगल</div>
+            <div class="day-header">बुध</div>
+            <div class="day-header">बिहि</div>
+            <div class="day-header">शुक्र</div>
+            <div class="day-header">शनि</div>
+          </div>
+          <div class="calendar-days">
+            <div 
+              *ngFor="let date of bsCalendarDates" 
+              class="day-cell"
+              [class.selected]="date.isSelected"
+              [class.today]="date.isToday"
+              [class.other-month]="!date.isCurrentMonth"
+              [class.disabled]="date.isDisabled"
+              (click)="selectBSDate(date)">
+              {{ date.day }}
+            </div>
+                <!-- <div 
+                  *ngFor="let date of startBSCalendarDates" 
+                  class="day-cell"
+                  [class.selected]="date.isSelected"
+                  [class.today]="date.isToday"
+                  [class.other-month]="!date.isCurrentMonth"
+                  [class.disabled]="date.isDisabled"
+                  (click)="selectStartBSDate(date)">
+                  {{ date.day }}
+                </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-actions-row m-0">
+      <div class="left-action">
+        <span class="format-toggle" (click)="changeFormat()" *ngIf="!showBS">Change to BS Format</span>
+         <!-- <span class="format-toggle" *ngIf="!showBS">Change to BS Format</span> -->
+        <span class="format-toggle" (click)="changeFormat()" *ngIf="showBS">Change to AD Format</span>
+      </div>
+      <div class="right-actions">
+        <button type="button" class="btn btn-secondary cancelButton m-0" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn btn-primary applyButton" (click)="applySingleDate()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date range selection -->
+  <div *ngIf="field?.controlType === 'daterange'" class="d-flex justify-content-between align-items-start">
+    <div class="preset-options">
+      <div *ngFor="let opt of rangeOptions" (click)="selectRange(opt)" class="preset-option">
+        {{ opt.label }} 
+        <div class="dateData">
+          <span class="date-summary" *ngIf="opt.display">{{ opt.display }}</span>
+          <span *ngIf="!opt.display"><i class="bi bi-chevron-right"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Range Popup -->
+    <div *ngIf="customRangeSelected" class="custom-range-popup">
+      <div class="date-picker-container">
+        <!-- Start Date Calendar -->
+        <div class="calendar-wrapper">
+          <div class="dateField">
+            <span>{{ getSelectedStartDate() }}</span>
+            <i class="bi bi-calendar-fill"></i>
+          </div>
+          
+          <!-- AD Start Date Calendar -->
+          <div class="custom-calendar" *ngIf="!showBS">
+            <div class="calendar-dropdowns">
+              <i class="bi bi-chevron-left chev" (click)="navigateStartMonth('prev')"></i>
+              <div>
+                <!-- <select [(ngModel)]="startMonth" (change)="onStartDateChange()" class="month-select">
+                  <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+                </select>
+                <select [(ngModel)]="startYear" (change)="onStartDateChange()" class="year-select">
+                  <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select> -->
+                <select [(ngModel)]="startMonth" class="month-select" disabled>
+                  <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+                </select>
+                <select [(ngModel)]="startYear" class="year-select" disabled>
+                  <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select>
+              </div>
+              <i class="bi bi-chevron-right chev" (click)="navigateStartMonth('next')"></i>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-header">
+                <div class="day-header">S</div>
+                <div class="day-header">M</div>
+                <div class="day-header">T</div>
+                <div class="day-header">W</div>
+                <div class="day-header">T</div>
+                <div class="day-header">F</div>
+                <div class="day-header">S</div>
+              </div>
+              <!-- <div class="calendar-days">
+                <div 
+                  *ngFor="let day of getDaysInMonth(startYear, startMonth)" 
+                  class="day-cell"
+                  [class.selected]="day === startDay"
+                  [class.today]="isToday(startYear, startMonth, day)"
+                  (click)="selectStartDay(day)">
+                  {{ day }}
+                </div>
+              </div> -->
+              <div class="calendar-days">
+  <div *ngFor="let day of getCalendarGrid(startYear, startMonth)" 
+       class="day-cell"
+       [class.selected]="day === startDay"
+       [class.today]="day && isToday(startYear, startMonth, day)"
+       [class.empty]="day === null"
+       (click)="day && selectStartDay(day)">
+    {{ day || '' }}
+  </div>
+</div>
+            </div>
+          </div>
+
+          <!-- BS Start Date Calendar -->
+          <div class="custom-calendar" *ngIf="showBS">
+            <div class="calendar-dropdowns">
+              <i class="bi bi-chevron-left chev" (click)="navigateStartBSMonth('prev')"></i>
+              <div>
+                <!-- <select [(ngModel)]="startBSMonth" (change)="onStartBSDateChange()" class="month-select">
+                  <option *ngFor="let month of bsMonths; let i = index" [value]="i">{{ month }}</option>
+                </select>
+                <select [(ngModel)]="startBSYear" (change)="onStartBSDateChange()" class="year-select">
+                  <option *ngFor="let year of bsYears" [value]="year">{{ year }}</option>
+                </select> -->
+                <select [(ngModel)]="startBSMonth" class="month-select" disabled>
+                  <option *ngFor="let month of bsMonths; let i = index" [value]="i">{{ month }}</option>
+                </select>
+                <select [(ngModel)]="startBSYear" class="year-select" disabled>
+                  <option *ngFor="let year of bsYears" [value]="year">{{ year }}</option>
+                </select>
+              </div>
+              <i class="bi bi-chevron-right chev" (click)="navigateStartBSMonth('next')"></i>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-header">
+                <div class="day-header">आइत</div>
+                <div class="day-header">सोम</div>
+                <div class="day-header">मंगल</div>
+                <div class="day-header">बुध</div>
+                <div class="day-header">बिहि</div>
+                <div class="day-header">शुक्र</div>
+                <div class="day-header">शनि</div>
+              </div>
+              <div class="calendar-days">
+                <div 
+                  *ngFor="let date of startBSCalendarDates" 
+                  class="day-cell"
+                  [class.selected]="date.isSelected"
+                  [class.today]="date.isToday"
+                  [class.other-month]="!date.isCurrentMonth"
+                  [class.disabled]="date.isDisabled"
+                  (click)="selectStartBSDate(date)">
+                  {{ date.day }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- End Date Calendar -->
+        <div class="calendar-wrapper">
+          <div class="dateField">
+            <span>{{ getSelectedEndDate() }}</span>
+            <i class="bi bi-calendar-fill"></i>
+          </div>
+          
+          <!-- AD End Date Calendar -->
+          <div class="custom-calendar" *ngIf="!showBS">
+            <div class="calendar-dropdowns">
+              <i class="bi bi-chevron-left chev" (click)="navigateEndMonth('prev')"></i>
+              <div>
+                <select [(ngModel)]="endMonth" (change)="onEndDateChange()" class="month-select">
+                  <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+                </select>
+                <select [(ngModel)]="endYear" (change)="onEndDateChange()" class="year-select">
+                  <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select>
+                <!-- <select [(ngModel)]="endMonth" class="month-select">
+                  <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+                </select>
+                <select [(ngModel)]="endYear" class="year-select">
+                  <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select> -->
+              </div>
+              <i class="bi bi-chevron-right chev" (click)="navigateEndMonth('next')"></i>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-header">
+                <div class="day-header">S</div>
+                <div class="day-header">M</div>
+                <div class="day-header">T</div>
+                <div class="day-header">W</div>
+                <div class="day-header">T</div>
+                <div class="day-header">F</div>
+                <div class="day-header">S</div>
+              </div>
+              <!-- <div class="calendar-days">
+                <div 
+                  *ngFor="let day of getDaysInMonth(endYear, endMonth)" 
+                  class="day-cell"
+                  [class.selected]="day === endDay"
+                  [class.today]="isToday(endYear, endMonth, day)"
+                  (click)="selectEndDay(day)">
+                  {{ day }}
+                </div>
+              </div> -->
+                            <div class="calendar-days">
+  <div *ngFor="let day of getCalendarGrid(endYear, endMonth)" 
+       class="day-cell"
+       [class.selected]="day === endDay"
+       [class.today]="day && isToday(endYear, endMonth, day)"
+       [class.empty]="day === null"
+       (click)="day && selectEndDay(day)">
+    {{ day || '' }}
+  </div>
+</div>
+            </div>
+          </div>
+
+          <!-- BS End Date Calendar -->
+          <div class="custom-calendar" *ngIf="showBS">
+            <div class="calendar-dropdowns">
+              <i class="bi bi-chevron-left chev" (click)="navigateEndBSMonth('prev')"></i>
+              <div>
+                <!-- <select [(ngModel)]="endBSMonth" (change)="onEndBSDateChange()" class="month-select">
+                  <option *ngFor="let month of bsMonths; let i = index" [value]="i">{{ month }}</option>
+                </select>
+                <select [(ngModel)]="endBSYear" (change)="onEndBSDateChange()" class="year-select">
+                  <option *ngFor="let year of bsYears" [value]="year">{{ year }}</option>
+                </select> -->
+                <select [(ngModel)]="endBSMonth" class="month-select">
+                  <option *ngFor="let month of bsMonths; let i = index" [value]="i">{{ month }}</option>
+                </select>
+                <select [(ngModel)]="endBSYear" class="year-select">
+                  <option *ngFor="let year of bsYears" [value]="year">{{ year }}</option>
+                </select>
+              </div>
+              <i class="bi bi-chevron-right chev" (click)="navigateEndBSMonth('next')"></i>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-header">
+                <div class="day-header">आइत</div>
+                <div class="day-header">सोम</div>
+                <div class="day-header">मंगल</div>
+                <div class="day-header">बुध</div>
+                <div class="day-header">बिहि</div>
+                <div class="day-header">शुक्र</div>
+                <div class="day-header">शनि</div>
+              </div>
+              <div class="calendar-days">
+                <div 
+                  *ngFor="let date of endBSCalendarDates" 
+                  class="day-cell"
+                  [class.selected]="date.isSelected"
+                  [class.today]="date.isToday"
+                  [class.other-month]="!date.isCurrentMonth"
+                  [class.disabled]="date.isDisabled"
+                  (click)="selectEndBSDate(date)">
+                  {{ date.day }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="popup-actions-row">
+        <div class="left-action">
+          <span class="format-toggle" (click)="changeFormat()" *ngIf="!showBS">Change to BS Format</span>
+           <!-- <span class="format-toggle" *ngIf="!showBS">Change to BS Format</span> -->
+          <span class="format-toggle" (click)="changeFormat()" *ngIf="showBS">Change to AD Format</span>
+        </div>
+        <div class="right-actions">
+          <button type="button" class="btn btn-secondary cancelButton mr-2" (click)="cancelRange()">Cancel</button>
+          <button type="button" class="btn btn-primary applyButton" (click)="applyCustomRange()">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
