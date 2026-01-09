@@ -25,7 +25,7 @@ export interface TableColumn {
   style?: string;
   noSearch?: boolean;
   dirty?: number;
-  isDynamicColumn?: boolean; // Flag to mark columns with ~ separator (read-only in config)
+  isDynamicColumn?: boolean;
 }
 
 export interface GroupedHeader {
@@ -85,7 +85,7 @@ export class GenericReportDynamicTableComponent implements OnInit, OnChanges {
   @Input() loading: boolean = false;
   @Input() reportConfig: any = null;
   @Input() enableSearch: boolean = true;
-  @Input() externalSearchTerm: string = ''; // New input for external search term
+  @Input() externalSearchTerm: string = '';
   @Input() searchChange: string = '';
   @Input() hideAdvancedSearch: boolean = false;
   @Input() REPHEADING_FontName: string = 'Roboto';
@@ -139,21 +139,17 @@ export class GenericReportDynamicTableComponent implements OnInit, OnChanges {
   columnSearchTerms: { [key: string]: string } = {};
 
   constructor(private cdr: ChangeDetectorRef,
-    // public masterService: MasterService,
   ) {}
 
   ngOnInit(): void {
     this.initializeTable();
     const pageSize = Number(this.tableConfig?.pageSize);
 
-// validate pageSize
 if (!isNaN(pageSize) && pageSize > 0) {
 
-  // add only if it does not already exist
   if (!this.pageSizes.includes(pageSize)) {
     this.pageSizes.push(pageSize);
 
-    // sort numerically (important!)
     this.pageSizes.sort((a, b) => a - b);
   }
 }
@@ -262,7 +258,7 @@ if (!isNaN(pageSize) && pageSize > 0) {
           colPosition: field.colPosition || 0,
           style: field.style || '',
           noSearch: field.noSearch || false,
-          dirty: field.dirty || 0 // Ensure dirty is always set
+          dirty: field.dirty || 0
         });
       }
     });
@@ -493,16 +489,7 @@ createGroupedHeaders(columns: TableColumn[]): void {
     } else {
       // Fallback: if both are empty, use visible columns directly
       result = this.getVisibleColumns();
-    }
-    
-    // console.log('getAllDisplayColumns result:', {
-    //   hasGroupedHeaders: this.hasGroupedHeaders,
-    //   groupedHeadersLength: this.groupedHeaders.length,
-    //   basicColumnsLength: this.basicColumns.length,
-    //   resultCount: result.length,
-    //   resultKeys: result.map(col => col.key).slice(0, 5)
-    // });
-    
+    }    
     return result;
   }
 
@@ -621,39 +608,43 @@ formatCellValue(value: any, column: TableColumn): string {
   if (value === null || value === undefined) return '';
   if (value === 0) return '0';
   if(column.formatString){console.log('formatString present:', column);}
+  
   try {
     switch (column.formatType) {
-
       case 0: // STRING / TEXT (NO SCIENTIFIC NOTATION)
         return this.convertScientificToDecimal(value);
-
+      
       case 1: // NUMBER
-        if (typeof value === 'number') {
-          return this.convertScientificToDecimal(value);
+        if (column.formatString) {
+          debugger
+          return this.applyNumberFormat(value, column.formatString);
         }
         return this.convertScientificToDecimal(value);
-
+      
       case 2: // DATE
         if (typeof value === 'string' && /^\d{2}-\d{2}-\d{4}$/.test(value)) {
           return value;
         }
-
+        
         const date = this.parseDate(value);
         if (!date || isNaN(date.getTime())) {
           return String(value);
         }
-
+        
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         const year = date.getFullYear();
         return `${month}/${day}/${year}`;
-
+      
       case 3: // TWO DECIMAL ROUNDING
+        if (column.formatString) {
+          return this.applyNumberFormat(value, column.formatString);
+        }
         if (typeof value === 'number') {
           return value.toFixed(2);
         }
         return this.convertScientificToDecimal(value);
-
+      
       default:
         return this.convertScientificToDecimal(value);
     }
@@ -661,6 +652,57 @@ formatCellValue(value: any, column: TableColumn): string {
     console.warn('Error formatting cell value:', error);
     return String(value);
   }
+}
+
+private applyNumberFormat(value: any, formatString: string): string {
+  const cleanValue = typeof value === 'string' ? value.replace(/,/g, '') : value;
+const numValue = typeof cleanValue === 'number' ? cleanValue : parseFloat(cleanValue);
+  
+  if (isNaN(numValue)) {
+    return this.convertScientificToDecimal(value);
+  }
+  
+  // Determine decimal places from format string
+  const decimalPart = formatString.split('.')[1];
+  const decimalPlaces = decimalPart ? decimalPart.length : 0;
+  
+  // Round to specified decimal places
+  const fixedValue = numValue.toFixed(decimalPlaces);
+  const [integerPart, decimal] = fixedValue.split('.');
+  
+  let formattedInteger: string;
+  
+  // Check format type
+  if (formatString.includes('##,##,###')) {
+    // Indian numbering system (##,##,###.##)
+    debugger
+    formattedInteger = this.formatIndianNumber(integerPart);
+  } else if (formatString.includes('###,###')) {
+    // International numbering system (###,###.##)
+    formattedInteger = this.formatInternationalNumber(integerPart);
+  } else {
+    // Default: no formatting
+    formattedInteger = integerPart;
+  }
+  
+  // Combine integer and decimal parts
+  return decimal ? `${formattedInteger}.${decimal}` : formattedInteger;
+}
+
+private formatInternationalNumber(value: string): string {
+  // Format as ###,###,### (groups of 3 from right)
+  return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+private formatIndianNumber(value: string): string {
+  // Format as ##,##,### (last 3 digits, then groups of 2)
+  const lastThree = value.slice(-3);
+  const otherNumbers = value.slice(0, -3);
+  
+  if (otherNumbers !== '') {
+    return otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + lastThree;
+  }
+  return lastThree;
 }
 
 convertScientificToDecimal(value: any): string {
@@ -729,26 +771,6 @@ private parseDate(value: any): Date | null {
     return this.columns.filter(col => !col.hidden);
   }
 
-  // Get pagination numbers to display
-  // getPaginationNumbers(): number[] {
-  //   const pages: number[] = [];
-  //   const maxPages = 5;
-  //   const halfMaxPages = Math.floor(maxPages / 2);
-    
-  //   let startPage = Math.max(1, this.currentPage - halfMaxPages);
-  //   let endPage = Math.min(this.totalPages, startPage + maxPages - 1);
-    
-  //   // Adjust start if we're near the end
-  //   if (endPage - startPage < maxPages - 1) {
-  //     startPage = Math.max(1, endPage - maxPages + 1);
-  //   }
-    
-  //   for (let i = startPage; i <= endPage; i++) {
-  //     pages.push(i);
-  //   }
-    
-  //   return pages;
-  // }
   getPaginationNumbers(): (number | string)[] {
   const pages: (number | string)[] = [];
   const total = this.totalPages;
