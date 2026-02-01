@@ -1,11 +1,13 @@
-<div class="filterBox selection" [ngClass]="this.field.selected == true ? 'my-auto' : ''">
+<div class="filterBox selection" [ngClass]="this.field.isRequired == true ? 'my-auto' : ''">
   <span style="cursor: pointer" (click)="toggleSelectionPopup($event, '#fff')">{{this.fieldName}}</span>
   <div>
     <div class="selected-wrapper ml-3">
       <span class="selectedCount" *ngIf="this.field.controlType =='multiselect'" (mouseover)="this.togglePopup($event, selectedValues, '#CFE8FF')">
         {{ selectedValues.length === valueArray.length && selectedValues.length > 0 ? 'All Selected' : '(' + selectedValues.length + ') Selected' }}
       </span>
-      <span class="selectedCount" *ngIf="this.field.controlType =='singleselect'">
+      <span class="selectedCount single-select-text" 
+          *ngIf="this.field.controlType =='singleselect'"
+          [title]="selectedSingle || 'Select an option'">
         {{ selectedSingle || 'Select an option' }}
       </span>
     </div>

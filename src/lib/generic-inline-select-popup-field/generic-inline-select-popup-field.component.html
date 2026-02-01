@@ -1,4 +1,4 @@
-<div class="filterBox divSelection" [ngClass]="this.field.selected == true ? 'my-auto' : ''">
+<div class="filterBox divSelection" [ngClass]="this.field.isRequired == true ? 'my-auto' : ''">
     <span style="cursor: pointer" (click)="toggleDivSelectionPopup()">{{this.fieldName}}</span>
     <div>
         <div class="selected-wrapper ml-3" (mouseover)="this.togglePopup($event, selectedDatas, '#CFE8FF')">

@@ -1,15 +1,5 @@
 /* generic-report-dynamic-table.component.scss */
- .btn-toggler {
-    position: absolute;
-    right: -1px;
-    top: 0px;
-    background: #336799;
-    border-color: #336799;
-    padding: 2px 4px;
-    font-size: 20px !important;
-    width: 40px;
-    z-index: 3;
- }
+
 .report-table-container {
   display: flex;
   flex-direction: column;
@@ -740,6 +730,7 @@
     border: 1px solid #ced4da;
     border-radius: 4px;
     font-size: 12px;
+    // padding-right: 26px;
     
     &:focus {
       outline: none;
@@ -754,9 +745,22 @@
     cursor: pointer;
     color: #6c757d;
     font-size: 14px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease;
     
-    &:hover {
-      color: #dc3545;
-    }
+    // &:hover {
+    //   color: #dc3545;
+    //   font-size: 14px;
+    // }
+  }
+  .column-search-wrapper:hover .clear-column-search
+  {
+    opacity: 1;
+    visibility: visible;
+  }
+  .clear-column-search:hover {
+    color: #dc3545;
+    background-color: #fff;
   }
 }

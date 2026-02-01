@@ -20,4 +20,8 @@ export class filterField {
   drilldownFieldId: string = '';
   drilldownFieldFrom: string = '';
   filterParameterValue!: filterParamData;
+  isRequired: boolean = false;
+  defaultFieldValue: string = '';
+  isServerSPagination: boolean = false;
+
 }

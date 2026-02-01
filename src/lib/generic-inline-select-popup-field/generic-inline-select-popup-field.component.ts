@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { PopupManagerService } from '../Services/popup-manager.service';
 import { Subscription } from 'rxjs';
 
@@ -70,6 +70,19 @@ export class GenericInlineSelectPopupFieldComponent implements OnInit {
       this.popupSubscription.unsubscribe();
     }
   }
+
+    ngOnChanges(changes: SimpleChanges): void {
+          if (changes['selected']) {
+        console.log('selected changed:',changes['selected']);
+        if(changes['selected'].currentValue == '%'){
+            this.selected === '%';
+            this.tempSelectedValues = [...this.dataArray.map(opt => opt.value)];
+        }else{
+          this.tempSelectedValues = changes['selected'].currentValue.split(',').map(v => v.trim()).filter(v => v);
+        }
+        this.selectedDatas = this.getNamesByValues(this.tempSelectedValues);
+      }
+    }
 
 
   // Convert values to names for display

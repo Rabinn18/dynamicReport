@@ -607,7 +607,7 @@ createGroupedHeaders(columns: TableColumn[]): void {
 formatCellValue(value: any, column: TableColumn): string {
   if (value === null || value === undefined) return '';
   if (value === 0) return '0';
-  if(column.formatString){console.log('formatString present:', column);}
+  // if(column.formatString){console.log('formatString present:', column);}
   
   try {
     switch (column.formatType) {
@@ -616,7 +616,6 @@ formatCellValue(value: any, column: TableColumn): string {
       
       case 1: // NUMBER
         if (column.formatString) {
-          debugger
           return this.applyNumberFormat(value, column.formatString);
         }
         return this.convertScientificToDecimal(value);

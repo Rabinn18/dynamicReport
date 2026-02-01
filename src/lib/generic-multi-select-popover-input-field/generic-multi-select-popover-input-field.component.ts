@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { PopupManagerService } from '../Services/popup-manager.service';
 import { Subscription } from 'rxjs';
 
@@ -18,6 +18,7 @@ export class GenericMultiSelectPopoverInputFieldComponent implements OnInit {
   @Input() options: any[] = [];
   @Input() selected: any; 
   @Input() field: any;
+  @Input() resetTriggered: boolean = false;
 
   @Output() selectionChange = new EventEmitter<string>();
 
@@ -43,7 +44,6 @@ export class GenericMultiSelectPopoverInputFieldComponent implements OnInit {
   selectedSingle: string = '';
 
   ngOnInit(): void {
-    debugger
     this.valueArray = this.options.map(opt => opt.value);
     this.tempSelectedValues = [...this.selected];
     this.selectedValues = this.mapSelectedToValues(this.selected);
@@ -55,7 +55,7 @@ export class GenericMultiSelectPopoverInputFieldComponent implements OnInit {
     }
     if(this.field.controlType =='singleselect'){
       if(this.selected[0] == "%" || this.selectedSingle == "%")this.selectedSingle = '';
-      if(typeof this.selected === 'string')this.selectedSingle = this.selected;
+      if(typeof this.selected === 'string')this.selectedSingle = this.options.filter(x => x.value === this.selected).map(x => x.name)[0];
     }
     
     this.updateFilteredOptions();
@@ -69,6 +69,24 @@ export class GenericMultiSelectPopoverInputFieldComponent implements OnInit {
         }
       }
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+        if (changes['selected']) {
+      console.log('selected changed:',changes['selected']);
+      if(changes['selected'].currentValue == '%' && !this.field.fieldSelectionValues?.apiURL){
+        this.selected = this.field.defaultFieldValue || (this.field.controlType =='multiselect' ? [] : '');
+        if(this.field.controlType =='multiselect'){
+          this.selected === '%';
+          this.selectedValues = this.mapSelectedToValues(this.selected);
+          this.tempSelectedValues = [...this.valueArray];
+          this.selected = [...this.valueArray];
+        }
+        else{
+          this.selectedSingle = 'All';
+        }
+      }
+    }
   }
 
     ngOnDestroy() {
@@ -108,7 +126,7 @@ export class GenericMultiSelectPopoverInputFieldComponent implements OnInit {
     const target = event.currentTarget as HTMLElement;
     const rect = target.getBoundingClientRect();
     console.log('target gets here',target,'rect gets here', rect);
-    if(this.field.selected == true){
+    if(this.field.isRequired == true){
       this.selectionPopupStyle = {
       position: 'absolute',
       zIndex: 9999,
@@ -175,7 +193,12 @@ this.tempSelectedValues = (this.selected || "").split(',').map(x => x.trim());
 
   // Updated method to filter options based on search and pagination
   updateFilteredOptions() {
-    let filtered = this.options.filter(opt => opt.name !== 'All');
+    let filtered = []
+    if(this.field.isRequired == true){
+        filtered = this.options;
+    }else{
+        filtered = this.options.filter(opt => opt.name !== 'All');
+    }
     
     if (this.searchTerm) {
       filtered = this.options.filter(option => 
