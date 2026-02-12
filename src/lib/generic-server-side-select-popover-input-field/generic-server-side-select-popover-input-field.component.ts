@@ -27,6 +27,7 @@ export class GenericServerSideSelectPopoverInputFieldComponent implements OnInit
   @Input() resetTriggered: boolean = false;
 
   @Output() selectionChange = new EventEmitter<string>();
+  @Output() selectedNameChange = new EventEmitter<string>();
 
   // Make Math available in template
   Math = Math;
@@ -77,7 +78,7 @@ export class GenericServerSideSelectPopoverInputFieldComponent implements OnInit
     // Initialize selected values
     if (this.field.controlType === 'singleselect') {
       if (this.selected && this.selected !== '%') {
-        this.selectedSingle = this.selected;
+        this.selectedSingle = this.field.selectedNames || this.selected;
       }
     } else if (this.field.controlType === 'multiselect') {
       this.selectedValues = Array.isArray(this.selected) ? [...this.selected] : [];
@@ -412,6 +413,7 @@ export class GenericServerSideSelectPopoverInputFieldComponent implements OnInit
       this.selected = item[valueField];
       this.selectedSingle = item[nameField];
       this.selectionChange.emit(this.selected);
+      this.selectedNameChange.emit(this.selectedSingle);
       this.showSelectionPopup = false;
     }
   }
