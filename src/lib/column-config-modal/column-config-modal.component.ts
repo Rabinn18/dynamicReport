@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
-export interface TableColumn {
+export interface TableColumns {
   key: string;
   title: string;
   titleGroup?: string;
@@ -24,13 +24,13 @@ export interface TableColumn {
 })
 export class ColumnConfigModalComponent implements OnInit, OnChanges {
   
-  @Input() columns: TableColumn[] = [];
+  @Input() columns: TableColumns[] = [];
   @Input() show: boolean = false;
-  @Output() onSave = new EventEmitter<TableColumn[]>();
+  @Output() onSave = new EventEmitter<TableColumns[]>();
   @Output() onClose = new EventEmitter<void>();
   
-  workingColumns: TableColumn[] = [];
-  originalColumns: TableColumn[] = [];
+  workingColumns: TableColumns[] = [];
+  originalColumns: TableColumns[] = [];
   
   ngOnInit(): void {
     this.initializeColumns();
@@ -63,7 +63,7 @@ export class ColumnConfigModalComponent implements OnInit, OnChanges {
     console.log('Initialized workingColumns:', this.workingColumns);
   }
   
-  onHiddenChange(column: TableColumn): void {
+  onHiddenChange(column: TableColumns): void {
     // Toggle hidden state
     column.hidden = !column.hidden;
     this.markDirty(column);
@@ -111,7 +111,7 @@ export class ColumnConfigModalComponent implements OnInit, OnChanges {
     this.onClose.emit();
   }
   
-  markDirty(column: TableColumn): void {
+  markDirty(column: TableColumns): void {
     column.dirty = 1;
   }
   
@@ -150,7 +150,7 @@ export class ColumnConfigModalComponent implements OnInit, OnChanges {
   }
   
   // Helper method to get display value for hidden checkbox
-  isColumnVisible(column: TableColumn): boolean {
+  isColumnVisible(column: TableColumns): boolean {
     return !column.hidden;
   }
   
@@ -160,7 +160,7 @@ export class ColumnConfigModalComponent implements OnInit, OnChanges {
   }
   
   // Check if column is dynamic (has ~ separator) - should be read-only
-  isDynamicColumn(column: TableColumn): boolean {
+  isDynamicColumn(column: TableColumns): boolean {
     return column.isDynamicColumn === true || column.key.includes('~');
   }
 }
