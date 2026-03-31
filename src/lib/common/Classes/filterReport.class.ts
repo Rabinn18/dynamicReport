@@ -3,6 +3,7 @@ import { FilterDisplayOption } from './FilterDisplayOption.enum';
 
 import { filterfieldGroup } from './filterfieldGroup.class';
 import { TableColumnSettings } from './genericSimpleColumnSetting.class';
+import { groupConfig } from './groupConfig.interface';
 
 export class filterReport {
   reportName: string = '';
@@ -10,6 +11,7 @@ export class filterReport {
   queryType: string = '';
   querySplit: string = '';
   _id: string = '';
+  groupConfig: groupConfig [];
   fieldgroup: filterfieldGroup[] = [];
   fiscalBeginDate: string = '';
   projectionfieldFormats: TableColumnSettings[] = [];
