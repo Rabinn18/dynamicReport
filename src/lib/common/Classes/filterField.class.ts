@@ -23,5 +23,6 @@ export class filterField {
   isRequired: boolean = false;
   defaultFieldValue: string = '';
   isServerSPagination: boolean = false;
+  groupName: string;
 
 }
