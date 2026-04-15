@@ -920,6 +920,20 @@ saveColumnSettings(columns: TableColumn[]): void {
     }
   }
 
+  getRowStyles(row: any): { [key: string]: string } {
+    const base: { [key: string]: string } = {
+      'font-family': this.REPDETAIL_FontName,
+      'font-size': this.REPDETAIL_FontSize
+    };
+    if (!row?.row_style) {
+      return base;
+    }
+    try {
+      return { ...base, ...JSON.parse(row.row_style) };
+    } catch {
+      return base;
+    }
+  }
 
 
 
