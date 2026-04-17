@@ -16,8 +16,8 @@ export class GenericCheckboxInputFieldComponent implements OnInit {
 
   toggleCheckbox(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.field.selected = input.checked == true ? 1 : 0;
-    this.selectionChange.emit(this.field.selected);
+    this.field.fieldValue = input.checked == true ? 1 : 0;
+    this.selectionChange.emit(this.field.fieldValue);
 
   }
 
