@@ -161,8 +161,7 @@ if (!isNaN(pageSize) && pageSize > 0) {
     if (changes['tableConfig'] && this.tableConfig) {
       console.log('TableConfig changed:', this.tableConfig);
       this.initializeTable();
-    }
-    if (changes['reportConfig'] && this.reportConfig) {
+    }else if (changes['reportConfig'] && this.reportConfig) {
       console.log('ReportConfig changed:', this.reportConfig);
       this.processReportConfig();
     }
