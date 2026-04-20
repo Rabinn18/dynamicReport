@@ -173,10 +173,7 @@
           <tr *ngFor="let row of displayData; let i = index; trackBy: trackByFn"
       class="table-row"
       [class.even-row]="i % 2 === 0"
-      [ngStyle]="{
-        'font-family': REPDETAIL_FontName,
-        'font-size': REPDETAIL_FontSize
-      }"
+      [ngStyle]="getRowStyles(row)"
       (contextmenu)="onContextMenuClick($event, row)">
 
           <td *ngIf="tableConfig?.showSerialNo" class="serial-cell">
@@ -247,7 +244,8 @@
       <tfoot class="table-foot-fixed" *ngIf="totalRow && Object.keys(totalRow).length > 0"
        [ngStyle]="{
          'font-family': REPTOTAL_FontName,
-         'font-size': REPTOTAL_Fontsize
+         'font-size': REPTOTAL_Fontsize,
+         'font-weight': 'bold'
        }">
         <tr class="total-row">
           <td *ngIf="tableConfig?.showSerialNo" class="total-cell">
